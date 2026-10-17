@@ -1,0 +1,18 @@
+# Client slide images: ask crawlers to stay out.
+# This is not access control. For real protection use
+# cPanel > Directory Privacy on this folder.
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+
+# The site serves rendered slide images; a source deck must never be served
+# from here, even if one is uploaded by mistake.
+<FilesMatch "\.(pdf|pptx|key)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

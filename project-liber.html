@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- seo:start -->
+  <title>Liber &middot; Bernardo Blom</title>
+  <meta name="description" content="B2B design and marketing project for Liber, developing strategic visual communication and campaign assets for the brand." />
+  <link rel="canonical" href="https://bernardoblom.com/project-liber.html" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="color-scheme" content="dark" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Bernardo Blom" />
+  <meta property="og:title" content="Liber: B2B Marketing" />
+  <meta property="og:description" content="B2B design and marketing project for Liber, developing strategic visual communication and campaign assets for the brand." />
+  <meta property="og:url" content="https://bernardoblom.com/project-liber.html" />
+  <meta property="og:image" content="https://bernardoblom.com/assets/og/liber.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- seo:end -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nav.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      color-scheme: dark;
+      --raised: #141414;       /* chips, tags and logo plates: one step above the cards */
+      --raised-2: #1c1c1c;
+      --text-2: #a9a9b0;
+      --border-strong: #333333;
+      --nav-bg: rgba(0,0,0,.7);
+      --bg: #000000;
+      --bg-alt: #0a0a0a;
+      --text: #ececec;
+      --muted: #a3a3ab;
+      --accent: #00a877;       /* decorative only */
+      --accent-text: #35d3a2;  /* text-safe green, 4.5:1 or better */
+      --border: #222222;
+      /* dark surfaces behind the style guide and the live preview.
+         The style guide SVGs draw white and #DCDBE6 straight onto --panel,
+         so it has to stay a dark surface (now near black): don't take it past ~#3a3a3a. */
+      --panel: #141414;
+      --panel-2: #1c1c1c;
+      --panel-line: #2a2a2a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LAYOUT ──────────────────────────── */
+    .page {
+      max-width: var(--max-w); margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) var(--edge) 120px;
+    }
+
+    /* ── HEADER ──────────────────────────── */
+    .project-header { margin-bottom: 56px; }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px;
+      font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color .2s;
+    }
+    .back-link:hover { color: var(--text); }
+    .back-link svg { width: 16px; height: 16px; transition: transform .2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+    .project-meta { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 8px; margin-bottom: 14px; }
+    .meta-year { font-size: 13px; font-weight: 500; color: var(--muted); }
+    .meta-cat  { font-size: 13px; font-weight: 600; color: var(--accent-text); }
+
+    .project-title {
+      font-size: clamp(36px, 6vw, 80px); font-weight: 800;
+      letter-spacing: -2.5px; line-height: .95; color: var(--text); margin-bottom: 22px;
+    }
+    .project-desc { font-size: clamp(15px, 1.4vw, 17px); color: var(--muted); line-height: 1.75; max-width: 640px; }
+
+    .project-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 28px; padding: 14px 22px;
+      font-size: 13px; font-weight: 500; letter-spacing: .3px;
+      color: var(--text); background: var(--bg);
+      border: 1.5px solid var(--text); text-decoration: none;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .project-link:hover { background: var(--text); border-color: var(--text); color: var(--bg); }
+    .project-link svg { transition: transform .2s; }
+    .project-link:hover svg { transform: translate(2px, -2px); }
+
+    /* ── STYLE GUIDE ─────────────────────── */
+    .sg { display: flex; flex-direction: column; gap: clamp(48px, 6vw, 80px); margin-bottom: clamp(56px, 7vw, 88px); }
+    .sg-head { display: flex; align-items: baseline; gap: 14px; }
+    .sg-title { font-size: clamp(19px, 2vw, 24px); font-weight: 700; letter-spacing: -.6px; }
+    .sg-note { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 620px; margin: 10px 0 20px; }
+
+    .sg-panel {
+      background: var(--panel); overflow: hidden;
+      padding: clamp(24px, 3.5vw, 48px);
+    }
+    .sg-stack { display: flex; flex-direction: column; align-items: center; gap: clamp(28px, 4vw, 48px); }
+    /* the vectors carry the design's own pixel scale, so they render 1:1 and only shrink */
+    .sg-panel img { display: block; width: auto; max-width: 100%; height: auto; }
+
+    .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 10px; }
+    .icon-cell {
+      aspect-ratio: 1; display: grid; place-items: center;
+      background: var(--panel-2); border: 1px solid var(--panel-line);
+      color: #fff; transition: color .25s, border-color .25s, transform .25s;
+    }
+    .icon-cell:hover { color: #6C2EF3; border-color: #6C2EF3; transform: translateY(-3px); }
+
+    /* the segment picker, rebuilt as live components so the labels are real text */
+    .chip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+    .chip {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; background: #fff;
+      box-shadow: inset 0 0 0 1.5px #fff;
+      transition: box-shadow .25s, transform .25s;
+    }
+    .chip-icon {
+      display: grid; place-items: center; flex-shrink: 0;
+      width: 34px; height: 34px;
+      background: #EDE7FE; color: #6C2EF3;
+      transition: background .25s, color .25s;
+    }
+    .chip-label {
+      font-size: 13px; font-weight: 500; letter-spacing: -.1px; color: #1b1b1b;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chip:hover { box-shadow: inset 0 0 0 1.5px #6C2EF3; transform: translateY(-2px); }
+    .chip:hover .chip-icon { background: #6C2EF3; color: #fff; }
+
+    .sg-legend { display: flex; gap: 20px; margin-top: 14px; font-size: 12px; color: var(--muted); }
+    .sg-legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .sg-legend i { width: 6px; height: 6px; background: var(--muted); }
+    .sg-legend span:last-child i { background: #6C2EF3; }
+
+    /* ── LIVE EMBED ──────────────────────── */
+    .embed { margin-bottom: clamp(56px, 7vw, 88px); }
+    .embed-head { display: flex; align-items: baseline; gap: 14px; }
+    .embed-title { font-size: clamp(19px, 2vw, 24px); font-weight: 700; letter-spacing: -.6px; }
+    .embed-note { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 620px; margin: 10px 0 20px; }
+
+    .embed-shell {
+      background: var(--panel); overflow: hidden;
+      border: 1px solid var(--panel-line);
+    }
+
+    /* browser chrome */
+    .embed-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; background: var(--panel-2); border-bottom: 1px solid var(--panel-line);
+    }
+    .embed-dots { display: flex; gap: 6px; flex-shrink: 0; }
+    .embed-dots i { width: 10px; height: 10px; background: #4d4d4d; }
+    .embed-url {
+      flex: 1; min-width: 0;
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 12px; background: var(--panel); border: 1px solid var(--panel-line);
+      font-size: 11.5px; color: #9b9b9b; letter-spacing: .2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .embed-url svg { flex-shrink: 0; color: #6e6e6e; }
+    .embed-tools { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .embed-vp {
+      display: flex; padding: 3px; background: var(--panel);
+      border: 1px solid var(--panel-line);
+    }
+    .embed-vp button {
+      display: grid; place-items: center;
+      width: 30px; height: 26px; border: none;
+      background: transparent; color: #8a8a8a; cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .embed-vp button:hover { color: #d4d4d4; }
+    .embed-vp button[aria-pressed="true"] { background: #4a4a4a; color: #fff; }
+    .embed-new {
+      display: grid; place-items: center;
+      width: 32px; height: 32px;
+      border: 1px solid var(--panel-line); background: var(--panel); color: #8a8a8a;
+      text-decoration: none; transition: color .2s, border-color .2s;
+    }
+    .embed-new:hover { color: #fff; border-color: #5c5c5c; }
+
+    /* scaled viewport */
+    .embed-viewport { position: relative; width: 100%; overflow: hidden; background: var(--panel); }
+    .embed-viewport iframe {
+      position: absolute; top: 0; left: 0;
+      border: 0; display: block; transform-origin: 0 0;
+      background: #fff;
+    }
+    .embed-viewport.is-mobile { background: var(--panel); }
+    .embed-viewport.is-mobile iframe {
+
+      box-shadow: 0 0 0 1px var(--panel-line), 0 18px 40px rgba(0,0,0,.45);
+    }
+    /* iOS Safari has a long history of sizing iframes to their content instead of
+       honouring height, which would clip the frame; let the wrapper scroll there. */
+    @media (hover: none) {
+      .embed-viewport { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    }
+
+    /* click-to-load poster */
+    .embed-poster {
+      position: absolute; inset: 0; z-index: 2;
+      border: none; padding: 0; width: 100%;
+      background: var(--panel) center top / cover no-repeat;
+      cursor: pointer; display: grid; place-items: center;
+      font-family: inherit;
+    }
+    .embed-poster::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(13,13,13,.55); transition: background .25s;
+    }
+    .embed-poster:hover::after { background: rgba(13,13,13,.42); }
+    .embed-play {
+      position: relative; z-index: 1;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 24px;
+      background: rgba(255,255,255,.96); color: #0d0d0d;
+      font-size: 13px; font-weight: 600; letter-spacing: .2px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.35);
+      transition: transform .25s;
+    }
+    .embed-poster:hover .embed-play { transform: translateY(-2px); }
+
+    .embed-foot {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      margin-top: 14px; font-size: 12px; color: var(--muted);
+    }
+    .embed-foot a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); }
+    .embed-foot a:hover { border-color: var(--text); }
+    .embed-fallback { display: none; color: #e8a15d; }
+    .embed-shell.is-stalled + .embed-foot .embed-fallback { display: inline; }
+
+    .gallery-title { font-size: clamp(19px, 2vw, 24px); font-weight: 700; letter-spacing: -.6px; margin-bottom: 10px; }
+    .gallery-note  { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 620px; margin-bottom: 20px; }
+
+    /* ── GALLERY ─────────────────────────── */
+    .gallery { display: flex; flex-direction: column; gap: 10px; }
+
+    .gallery-video-wrap {
+      width: 100%; aspect-ratio: 16/9;
+      overflow: hidden; background: #000;
+    }
+    .gallery-video-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    .gallery-img-wrap { width: 100%; overflow: hidden; background: var(--bg-alt); }
+    .gallery-img { display: block; width: 100%; height: auto; }
+
+    /* ── NOT FOUND ───────────────────────── */
+    .not-found {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 60svh; text-align: center; gap: 14px;
+    }
+    .not-found h2 { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: var(--text); }
+    .not-found p  { font-size: 14px; color: var(--muted); }
+    .not-found a  { font-size: 13px; font-weight: 600; color: var(--accent-text); text-decoration: none; border-bottom: 1.5px solid var(--accent-text); padding-bottom: 2px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#page">Skip to content</a>
+
+  <nav id="nav" class="site-nav" aria-label="Primary">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Bernardo Blom, home">
+        <img src="assets/SVG/Ativo%201logo-blom.svg" alt="Bernardo Blom" width="632" height="641" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#stacks" data-spy="stacks">What I do</a></li>
+        <li><a href="index.html#work" aria-current="page">Work</a></li>
+        <li><a href="index.html#experience" data-spy="experience">Experience</a></li>
+        <li><a href="decks.html">Decks</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="nav-icon" href="https://www.linkedin.com/in/bernardo-blom/" target="_blank" rel="noopener" aria-label="LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <a class="nav-cta" href="Bernardo-Blom-Resume.pdf" download>Resume <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></a>
+      </div>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu-panel" aria-label="Open menu"><svg class="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg><svg class="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <div class="menu-panel" id="menu-panel">
+      <ul>
+      <li><a href="index.html#stacks" data-spy="stacks">What I do<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>
+      <li><a href="index.html#work" aria-current="page">Work<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>
+      <li><a href="index.html#experience" data-spy="experience">Experience<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>
+      <li><a href="decks.html">Decks<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>
+      </ul>
+      <div class="menu-actions">
+        <a class="menu-cta" href="Bernardo-Blom-Resume.pdf" download>Resume <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></a>
+        <a class="menu-icon-link" href="https://www.linkedin.com/in/bernardo-blom/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page" id="page">
+    <div class="project-header">
+      <h1 class="project-title">Liber</h1>
+      <p class="project-desc">B2B design and marketing project for Liber, developing strategic visual communication and campaign assets for the brand.</p>
+    </div>
+  </main>
+
+  <script>window.__PROJECT_ID = "liber";</script>
+  <script>
+    function ep(raw) {
+      if (raw.startsWith('http')) return raw;
+      return raw.split('/').map(encodeURIComponent).join('/');
+    }
+
+    // icon set lifted from the project's component sheet (vector, recoloured with currentColor)
+    const AUTOMATIZE_ICONS = [
+      "<g transform=\"translate(-213.38 -412.50)\"><path d=\"M219.25 417.5H218.375C218.143 417.5 217.92 417.592 217.756 417.756C217.592 417.92 217.5 418.143 217.5 418.375V421.438C217.5 422.714 218.007 423.938 218.91 424.84C219.812 425.743 221.036 426.25 222.312 426.25C223.589 426.25 224.813 425.743 225.715 424.84C226.618 423.938 227.125 422.714 227.125 421.438V418.375C227.125 418.143 227.033 417.92 226.869 417.756C226.705 417.592 226.482 417.5 226.25 417.5H225.375\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M221 427.125C221 427.814 221.136 428.497 221.4 429.134C221.663 429.771 222.05 430.35 222.538 430.837C223.025 431.325 223.604 431.712 224.241 431.975C224.878 432.239 225.561 432.375 226.25 432.375C226.939 432.375 227.622 432.239 228.259 431.975C228.896 431.712 229.475 431.325 229.962 430.837C230.45 430.35 230.837 429.771 231.1 429.134C231.364 428.497 231.5 427.814 231.5 427.125V424.5\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M223.625 416.625V418.375\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M219.25 416.625V418.375\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M231.5 424.5C232.466 424.5 233.25 423.716 233.25 422.75C233.25 421.784 232.466 421 231.5 421C230.534 421 229.75 421.784 229.75 422.75C229.75 423.716 230.534 424.5 231.5 424.5Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-211.62 -572.28)\"><path d=\"M224.5 578.812C223.188 577.937 221.875 577.937 220.562 578.375C219.25 578.812 218.375 580.125 218.375 581.875C218.375 584.5 219.688 585.375 220.125 588C220.388 589.487 220.562 590.625 221.438 590.625C222.312 590.625 222.487 589.312 222.75 587.562C223.013 585.987 223.188 585.375 223.625 585.375C224.062 585.375 224.237 585.987 224.5 587.562C224.763 589.312 225.112 590.625 225.812 590.625C226.513 590.625 226.862 589.487 227.125 588C227.562 585.375 228.875 584.5 228.875 581.875C228.875 580.125 228 578.812 226.688 578.375C225.375 577.937 224.062 577.937 222.75 578.812H224.5Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-212.50 -732.50)\"><g clip-path=\"url(#clip0_1008_2)\"> <path d=\"M232.638 747.388C232.833 747.583 232.989 747.814 233.095 748.07C233.201 748.325 233.255 748.599 233.255 748.875C233.255 749.151 233.201 749.425 233.095 749.68C232.989 749.936 232.833 750.167 232.638 750.363L230.363 752.638C230.167 752.833 229.936 752.989 229.68 753.095C229.425 753.201 229.151 753.255 228.875 753.255C228.599 753.255 228.325 753.201 228.07 753.095C227.814 752.989 227.583 752.833 227.388 752.638L216.363 741.613C215.969 741.217 215.749 740.683 215.749 740.125C215.749 739.568 215.969 739.033 216.363 738.638L218.638 736.363C219.033 735.969 219.568 735.748 220.125 735.748C220.683 735.748 221.217 735.969 221.613 736.363L232.638 747.388Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M226.688 744.938L228.438 743.188\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M224.062 742.312L225.812 740.562\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M221.438 739.688L223.188 737.938\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M229.312 747.562L231.062 745.812\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g></g>",
+      "<g transform=\"translate(-212.50 -892.50)\"><path d=\"M228 908L230.625 901L233.25 908C232.489 908.569 231.57 908.875 230.625 908.875C229.68 908.875 228.761 908.569 228 908Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M215.75 908L218.375 901L221 908C220.239 908.569 219.32 908.875 218.375 908.875C217.43 908.875 216.511 908.569 215.75 908Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M220.125 912.375H228.875\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224.5 896.625V912.375\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M216.625 900.125H218.375C220.125 900.125 222.75 899.25 224.5 898.375C226.25 899.25 228.875 900.125 230.625 900.125H232.375\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-212.50 -1052.51)\"><g clip-path=\"url(#clip2_1008_2)\"> <path d=\"M224.5 1058.37C224.501 1058.03 224.432 1057.68 224.297 1057.36C224.162 1057.03 223.964 1056.74 223.714 1056.49C223.465 1056.25 223.169 1056.06 222.843 1055.93C222.518 1055.8 222.17 1055.74 221.82 1055.74C221.47 1055.75 221.125 1055.83 220.806 1055.97C220.486 1056.11 220.198 1056.32 219.959 1056.57C219.72 1056.83 219.534 1057.13 219.413 1057.46C219.291 1057.79 219.237 1058.13 219.253 1058.48C218.738 1058.62 218.261 1058.86 217.856 1059.21C217.452 1059.55 217.131 1059.98 216.918 1060.47C216.705 1060.96 216.606 1061.49 216.627 1062.02C216.649 1062.55 216.791 1063.07 217.042 1063.53C216.6 1063.89 216.252 1064.35 216.029 1064.88C215.805 1065.4 215.714 1065.98 215.762 1066.54C215.81 1067.11 215.996 1067.66 216.304 1068.14C216.612 1068.62 217.032 1069.02 217.529 1069.3C217.468 1069.77 217.504 1070.25 217.636 1070.71C217.769 1071.17 217.994 1071.6 218.298 1071.97C218.602 1072.34 218.978 1072.64 219.404 1072.86C219.83 1073.08 220.296 1073.21 220.773 1073.24C221.251 1073.27 221.729 1073.2 222.18 1073.04C222.63 1072.88 223.043 1072.63 223.392 1072.3C223.741 1071.97 224.02 1071.58 224.21 1071.14C224.401 1070.7 224.499 1070.23 224.5 1069.75V1058.37Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M224.5 1058.37C224.499 1058.03 224.568 1057.68 224.703 1057.36C224.838 1057.03 225.036 1056.74 225.286 1056.49C225.535 1056.25 225.831 1056.06 226.157 1055.93C226.482 1055.8 226.83 1055.74 227.18 1055.74C227.53 1055.75 227.875 1055.83 228.194 1055.97C228.514 1056.11 228.802 1056.32 229.041 1056.57C229.28 1056.83 229.466 1057.13 229.587 1057.46C229.709 1057.79 229.763 1058.13 229.747 1058.48C230.262 1058.62 230.739 1058.86 231.144 1059.21C231.548 1059.55 231.869 1059.98 232.082 1060.47C232.295 1060.96 232.394 1061.49 232.373 1062.02C232.351 1062.55 232.209 1063.07 231.958 1063.53C232.4 1063.89 232.748 1064.35 232.971 1064.88C233.195 1065.4 233.286 1065.98 233.238 1066.54C233.19 1067.11 233.004 1067.66 232.696 1068.14C232.388 1068.62 231.968 1069.02 231.471 1069.3C231.532 1069.77 231.496 1070.25 231.364 1070.71C231.231 1071.17 231.006 1071.6 230.702 1071.97C230.398 1072.34 230.022 1072.64 229.596 1072.86C229.17 1073.08 228.704 1073.21 228.227 1073.24C227.749 1073.27 227.271 1073.2 226.82 1073.04C226.37 1072.88 225.957 1072.63 225.608 1072.3C225.259 1071.97 224.98 1071.58 224.79 1071.14C224.599 1070.7 224.501 1070.23 224.5 1069.75V1058.37Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M227.125 1065.38C226.39 1065.12 225.749 1064.65 225.282 1064.02C224.814 1063.4 224.542 1062.65 224.5 1061.88C224.458 1062.65 224.186 1063.4 223.718 1064.02C223.251 1064.65 222.61 1065.12 221.875 1065.38\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g></g>",
+      "<g transform=\"translate(-212.50 -1212.95)\"><path d=\"M216.625 1223.62L232.375 1219.25V1229.75L216.625 1226.25V1223.62Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224.15 1228.7C224.058 1229.03 223.901 1229.35 223.689 1229.62C223.477 1229.89 223.212 1230.12 222.912 1230.29C222.611 1230.46 222.28 1230.57 221.937 1230.61C221.594 1230.65 221.246 1230.63 220.913 1230.54C220.579 1230.45 220.267 1230.29 219.995 1230.08C219.722 1229.86 219.494 1229.6 219.323 1229.3C219.153 1229 219.043 1228.67 219 1228.32C218.958 1227.98 218.983 1227.63 219.075 1227.3\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-212.99 -1372.01)\"><path d=\"M226.862 1379.51C226.702 1379.68 226.612 1379.9 226.612 1380.13C226.612 1380.35 226.702 1380.57 226.862 1380.74L228.262 1382.14C228.426 1382.3 228.646 1382.39 228.875 1382.39C229.104 1382.39 229.324 1382.3 229.487 1382.14L232.786 1378.84C233.226 1379.81 233.359 1380.89 233.168 1381.94C232.977 1382.99 232.47 1383.96 231.715 1384.72C230.961 1385.47 229.994 1385.98 228.944 1386.17C227.894 1386.36 226.811 1386.23 225.839 1385.79L219.792 1391.83C219.444 1392.18 218.972 1392.38 218.48 1392.38C217.988 1392.38 217.516 1392.18 217.167 1391.83C216.819 1391.48 216.624 1391.01 216.624 1390.52C216.624 1390.03 216.819 1389.56 217.167 1389.21L223.214 1383.16C222.774 1382.19 222.64 1381.11 222.832 1380.06C223.023 1379.01 223.53 1378.04 224.284 1377.28C225.039 1376.53 226.006 1376.02 227.056 1375.83C228.106 1375.64 229.189 1375.77 230.161 1376.21L226.871 1379.5L226.862 1379.51Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-212.50 -1531.62)\"><path d=\"M228 1551.5V1537.5C228 1537.04 227.816 1536.59 227.487 1536.26C227.159 1535.93 226.714 1535.75 226.25 1535.75H222.75C222.286 1535.75 221.841 1535.93 221.513 1536.26C221.184 1536.59 221 1537.04 221 1537.5V1551.5\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M231.5 1539.25H217.5C216.534 1539.25 215.75 1540.03 215.75 1541V1549.75C215.75 1550.72 216.534 1551.5 217.5 1551.5H231.5C232.466 1551.5 233.25 1550.72 233.25 1549.75V1541C233.25 1540.03 232.466 1539.25 231.5 1539.25Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-212.50 -1692.50)\"><path d=\"M223.625 1708.88L225.375 1710.62C225.547 1710.8 225.752 1710.93 225.977 1711.03C226.202 1711.12 226.444 1711.17 226.687 1711.17C226.931 1711.17 227.173 1711.12 227.398 1711.03C227.623 1710.93 227.828 1710.8 228 1710.62C228.172 1710.45 228.309 1710.25 228.402 1710.02C228.496 1709.8 228.544 1709.56 228.544 1709.31C228.544 1709.07 228.496 1708.83 228.402 1708.6C228.309 1708.38 228.172 1708.17 228 1708\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M226.25 1706.25L228.437 1708.44C228.786 1708.79 229.258 1708.98 229.75 1708.98C230.242 1708.98 230.714 1708.79 231.062 1708.44C231.411 1708.09 231.606 1707.62 231.606 1707.12C231.606 1706.63 231.411 1706.16 231.062 1705.81L227.667 1702.42C227.175 1701.93 226.508 1701.65 225.812 1701.65C225.117 1701.65 224.45 1701.93 223.957 1702.42L223.187 1703.19C222.839 1703.54 222.367 1703.73 221.875 1703.73C221.383 1703.73 220.911 1703.54 220.562 1703.19C220.214 1702.84 220.019 1702.37 220.019 1701.87C220.019 1701.38 220.214 1700.91 220.562 1700.56L223.021 1698.1C223.819 1697.31 224.86 1696.8 225.979 1696.66C227.098 1696.52 228.231 1696.76 229.199 1697.34L229.61 1697.59C229.983 1697.81 230.425 1697.89 230.852 1697.81L232.375 1697.5\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M232.375 1696.62L233.25 1706.25H231.5\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M216.625 1696.62L215.75 1706.25L221.438 1711.94C221.786 1712.29 222.258 1712.48 222.75 1712.48C223.242 1712.48 223.714 1712.29 224.062 1711.94C224.411 1711.59 224.606 1711.12 224.606 1710.62C224.606 1710.13 224.411 1709.66 224.062 1709.31\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M216.625 1697.5H223.625\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-212.56 -1852.52)\"><g clip-path=\"url(#clip4_1008_2)\"> <path d=\"M221 1873.25C221.483 1873.25 221.875 1872.86 221.875 1872.38C221.875 1871.89 221.483 1871.5 221 1871.5C220.517 1871.5 220.125 1871.89 220.125 1872.38C220.125 1872.86 220.517 1873.25 221 1873.25Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M230.625 1873.25C231.108 1873.25 231.5 1872.86 231.5 1872.38C231.5 1871.89 231.108 1871.5 230.625 1871.5C230.142 1871.5 229.75 1871.89 229.75 1872.38C229.75 1872.86 230.142 1873.25 230.625 1873.25Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M215.794 1855.79H217.544L219.871 1866.66C219.957 1867.06 220.178 1867.41 220.497 1867.67C220.817 1867.92 221.214 1868.05 221.621 1868.04H230.179C230.577 1868.04 230.963 1867.91 231.273 1867.66C231.584 1867.41 231.799 1867.06 231.885 1866.67L233.329 1860.17H218.48\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g></g>",
+      "<g transform=\"translate(-212.50 -2012.50)\"><g clip-path=\"url(#clip6_1008_2)\"> <path d=\"M215.75 2020.13L219.609 2016.27C219.772 2016.1 219.965 2015.97 220.178 2015.88C220.392 2015.8 220.62 2015.75 220.851 2015.75H228.149C228.38 2015.75 228.608 2015.8 228.822 2015.88C229.035 2015.97 229.228 2016.1 229.391 2016.27L233.25 2020.13\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M217.5 2024.5V2031.5C217.5 2031.96 217.684 2032.41 218.013 2032.74C218.341 2033.07 218.786 2033.25 219.25 2033.25H229.75C230.214 2033.25 230.659 2033.07 230.987 2032.74C231.316 2032.41 231.5 2031.96 231.5 2031.5V2024.5\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M227.125 2033.25V2029.75C227.125 2029.29 226.941 2028.84 226.612 2028.51C226.284 2028.18 225.839 2028 225.375 2028H223.625C223.161 2028 222.716 2028.18 222.388 2028.51C222.059 2028.84 221.875 2029.29 221.875 2029.75V2033.25\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M215.75 2020.12H233.25\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g></g>",
+      "<g transform=\"translate(-212.50 -2172.50)\"><path d=\"M222.75 2180.12L227.125 2182.75L222.75 2185.38V2180.12Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M231.5 2176.62H217.5C216.534 2176.62 215.75 2177.41 215.75 2178.38V2187.12C215.75 2188.09 216.534 2188.88 217.5 2188.88H231.5C232.466 2188.88 233.25 2188.09 233.25 2187.12V2178.38C233.25 2177.41 232.466 2176.62 231.5 2176.62Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224.5 2188.88V2192.38\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M221 2192.38H228\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-214.00 -2334.00)\"><path d=\"M220 2356V2338C220 2337.47 220.211 2336.96 220.586 2336.59C220.961 2336.21 221.47 2336 222 2336H230C230.53 2336 231.039 2336.21 231.414 2336.59C231.789 2336.96 232 2337.47 232 2338V2356H220Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M220 2346H218C217.47 2346 216.961 2346.21 216.586 2346.59C216.211 2346.96 216 2347.47 216 2348V2354C216 2354.53 216.211 2355.04 216.586 2355.41C216.961 2355.79 217.47 2356 218 2356H220\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M232 2343H234C234.53 2343 235.039 2343.21 235.414 2343.59C235.789 2343.96 236 2344.47 236 2345V2354C236 2354.53 235.789 2355.04 235.414 2355.41C235.039 2355.79 234.53 2356 234 2356H232\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224 2340H228\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224 2344H228\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224 2348H228\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224 2352H228\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-214.00 -2654.00)\"><path d=\"M229 2668C229.2 2667 229.7 2666.3 230.5 2665.5C231.5 2664.6 232 2663.3 232 2662C232 2660.41 231.368 2658.88 230.243 2657.76C229.117 2656.63 227.591 2656 226 2656C224.409 2656 222.883 2656.63 221.757 2657.76C220.632 2658.88 220 2660.41 220 2662C220 2663 220.2 2664.2 221.5 2665.5C222.2 2666.2 222.8 2667 223 2668\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M223 2672H229\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224 2676H228\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-214.00 -2814.00)\"><path d=\"M230 2835V2833C230 2831.94 229.579 2830.92 228.828 2830.17C228.078 2829.42 227.061 2829 226 2829H220C218.939 2829 217.922 2829.42 217.172 2830.17C216.421 2830.92 216 2831.94 216 2833V2835\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M223 2825C225.209 2825 227 2823.21 227 2821C227 2818.79 225.209 2817 223 2817C220.791 2817 219 2818.79 219 2821C219 2823.21 220.791 2825 223 2825Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M236 2835V2833C235.999 2832.11 235.704 2831.25 235.161 2830.55C234.618 2829.85 233.858 2829.35 233 2829.13\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M230 2817.13C230.86 2817.35 231.623 2817.85 232.168 2818.55C232.712 2819.25 233.008 2820.12 233.008 2821C233.008 2821.89 232.712 2822.76 232.168 2823.46C231.623 2824.16 230.86 2824.66 230 2824.88\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-214.50 -2974.00)\"><path d=\"M233 2981V2978C233 2977.73 232.895 2977.48 232.707 2977.29C232.52 2977.11 232.265 2977 232 2977H219C218.47 2977 217.961 2977.21 217.586 2977.59C217.211 2977.96 217 2978.47 217 2979C217 2979.53 217.211 2980.04 217.586 2980.41C217.961 2980.79 218.47 2981 219 2981H234C234.265 2981 234.52 2981.11 234.707 2981.29C234.895 2981.48 235 2981.73 235 2982V2986M235 2986H232C231.47 2986 230.961 2986.21 230.586 2986.59C230.211 2986.96 230 2987.47 230 2988C230 2988.53 230.211 2989.04 230.586 2989.41C230.961 2989.79 231.47 2990 232 2990H235C235.265 2990 235.52 2989.89 235.707 2989.71C235.895 2989.52 236 2989.27 236 2989V2987C236 2986.73 235.895 2986.48 235.707 2986.29C235.52 2986.11 235.265 2986 235 2986Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M217 2979V2993C217 2993.53 217.211 2994.04 217.586 2994.41C217.961 2994.79 218.47 2995 219 2995H234C234.265 2995 234.52 2994.89 234.707 2994.71C234.895 2994.52 235 2994.27 235 2994V2990\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>",
+      "<g transform=\"translate(-214.00 -3134.00)\"><path d=\"M217 3156H235\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M220 3152V3145\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M224 3152V3145\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M228 3152V3145\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M232 3152V3145\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M226 3136L234 3141H218L226 3136Z\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>"
+    ];
+
+    const PROJECTS = [
+      {
+        slug: "automatize-contabilidade",
+        title: "Automatize Contabilidade",
+        year: "2026", cat: "Web Design & UI System",
+        desc: "End-to-end website design for Automatize Contabilidade, a digital accounting firm. The project covers the full conversion journey \u2014 from the hero and the traditional vs. digital comparison to a tax savings simulator \u2014 supported by a documented component library with defined states and variants.",
+        link: "https://automatizecontabilidade.com",
+        linkLabel: "Visit live site",
+        liveEmbed: {
+          url: "https://automatizecontabilidade.com",
+          label: "automatizecontabilidade.com",
+          title: "The live site",
+          note: "The site running for real, inside this page. Scroll it, switch segments, run the tax savings simulator. Use the toggle to compare the desktop and mobile layouts.",
+          poster: "assets/Projects/Automatize-contabilidade/02-site.jpg"
+        },
+        styleGuide: [
+          {
+            title: "Icon set", kind: "icons",
+            note: "Seventeen line icons drawn on a 24px grid, one per service the firm sells. Default state is the light stroke on the dark surface; hovering a tile switches the stroke to the brand purple. Hover them.",
+            legend: ["Default", "Hover"]
+          },
+          {
+            title: "Buttons", kind: "svg",
+            note: "Primary, secondary, ghost and full-width pills, each documented with the state it moves to on hover. Left column is the resting state, right column the hover.",
+            src: ["assets/Projects/Automatize-contabilidade/sg-buttons.svg", "assets/Projects/Automatize-contabilidade/sg-buttons-wide.svg"],
+            legend: ["Default", "Hover"]
+          },
+          {
+            title: "Service selector", kind: "chips",
+            note: "The chip that drives the segment picker: icon container, label and border all shift together, so a single component covers every profession the firm serves. Hover them.",
+            chips: [
+              "M\u00e9dico", "Dentista", "Arquiteto", "Advogado",
+              "Psic\u00f3logo", "Publicit\u00e1rio", "T\u00e9cnico", "Consultor",
+              "Representante comercial", "Lojista", "Varejista", "Infoprodutor"
+            ],
+            legend: ["Default", "Hover"]
+          },
+          {
+            title: "Links and text buttons", kind: "svg",
+            note: "Inline links, outlined text buttons and underlined variants, with the low-emphasis and disabled states that keep secondary actions from competing with the primary CTA.",
+            src: ["assets/Projects/Automatize-contabilidade/sg-links.svg"],
+            legend: ["Default", "Hover"]
+          },
+          {
+            title: "Solution cards", kind: "svg",
+            note: "The card that carries each solution: numbered index, icon container, copy block and button. On hover the surface, the icon container and the button invert together.",
+            src: ["assets/Projects/Automatize-contabilidade/sg-cards.svg"],
+            legend: ["Default", "Hover"]
+          }
+        ],
+        galleryTitle: "The page it builds",
+        galleryNote: "Every component above assembled into the live landing page, top to bottom.",
+        images: [
+          "assets/Projects/Automatize-contabilidade/02-site.jpg"
+        ]
+      },
+      {
+        slug: "latam-airlines",
+        title: "LATAM Airlines",
+        year: "2026", cat: "Brand & Marketing",
+        desc: "B2B marketing and design project for LATAM Airlines, developing visual assets and brand communication materials for the airline's enterprise campaigns.",
+        images: [
+          "assets/Projects/latam/Prancheta 1.png",
+          "assets/Projects/latam/Prancheta 2.png",
+          "assets/Projects/latam/Prancheta 3.png",
+          "assets/Projects/latam/Prancheta 4.png",
+          "assets/Projects/latam/Prancheta 5.png",
+          "assets/Projects/latam/Prancheta 6.png",
+          "assets/Projects/latam/Prancheta 7.png"
+        ]
+      },
+      {
+        slug: "latam-ui-design",
+        title: "LATAM Airlines: UI Design",
+        year: "2025", cat: "UI Design",
+        desc: "UI design project for LATAM Airlines, developing interface concepts and digital experience designs for the airline's digital ecosystem.",
+        images: [
+          "assets/Projects/LATAM airlines UI Design/500fc013-2c1f-4a28-85bc-b31646df5b29_rw_1920.png",
+          "assets/Projects/LATAM airlines UI Design/96c60109-49bf-4d6f-9876-00a1b2df9fee_rw_1920.png"
+        ]
+      },
+      {
+        slug: "essenza",
+        title: "Essenza",
+        year: "2025", cat: "Brand Identity",
+        desc: "Brand identity and visual design system for Essenza. The project focused on creating a cohesive identity that communicates elegance and authenticity.",
+        images: [
+          "assets/Projects/essenza/01-thumbnail.png",
+          "assets/Projects/essenza/02.png",
+          "assets/Projects/essenza/03.png",
+          "assets/Projects/essenza/04.png",
+          "assets/Projects/essenza/05.png",
+          "assets/Projects/essenza/06.png",
+          "assets/Projects/essenza/07.png"
+        ]
+      },
+      {
+        slug: "sismad",
+        title: "SISMAD",
+        year: "2025", cat: "B2B Marketing",
+        desc: "B2B design and marketing project for SISMAD, creating visual strategy and communication assets aligned with enterprise market positioning.",
+        images: [
+          "assets/Projects/sismad/01-thumbnail.png",
+          "assets/Projects/sismad/02.png",
+          "assets/Projects/sismad/03.png",
+          "assets/Projects/sismad/04.png",
+          "assets/Projects/sismad/05.png",
+          "assets/Projects/sismad/06.png"
+        ]
+      },
+      {
+        slug: "lme-incorporadora",
+        title: "LME Incorporadora",
+        year: "2025", cat: "Real Estate Branding",
+        desc: "Visual identity and marketing materials for LME Incorporadora, positioning the real estate brand with a strong and trustworthy presence in the market.",
+        images: [
+          "assets/Projects/lme-incorporadora/05dcb03b-d1d1-4de9-8139-86ddc3089288_rw_1920.png",
+          "assets/Projects/lme-incorporadora/0d79f52a-514e-4f91-9ac6-8c9bbab1fb7b_rw_1920.png",
+          "assets/Projects/lme-incorporadora/1beba2a7-7a94-48ec-bcc6-72e270f261ba_rw_1920.png",
+          "assets/Projects/lme-incorporadora/253446aa-a429-4b27-bda7-1f9d910fd0ce_rw_1920.png",
+          "assets/Projects/lme-incorporadora/48aa3dfe-050e-4601-b45e-86828a7bdbd2_rw_1920.png",
+          "assets/Projects/lme-incorporadora/4e2532be-9c5b-4397-bad9-62875798e68b_rw_1920.png",
+          "assets/Projects/lme-incorporadora/72c6b0a7-a6da-480e-abf5-db51fa3c9b68_rw_1920.png",
+          "assets/Projects/lme-incorporadora/76c686e8-dbc0-41c2-bb1b-f69340c7406f_rw_1920.png",
+          "assets/Projects/lme-incorporadora/b1c88f95-a6e6-42ef-8044-279f379795e3_rw_1920.png",
+          "assets/Projects/lme-incorporadora/da5a03fc-a8ed-4d09-91d6-18589b722236_rw_1920.png",
+          "assets/Projects/lme-incorporadora/ef00c2f8-a3d0-43c0-8478-e038e0ba32a2_rw_1920.png"
+        ]
+      },
+      {
+        slug: "tecnoly",
+        title: "Tecnoly",
+        year: "2025", cat: "Technology Branding",
+        desc: "Branding for Tecnoly, a Brazilian technology company founded in 2004 in São José dos Campos. Specialized in technology, engineering and urban mobility: IT, custom software, CCTV and traffic management.",
+        images: [
+          "assets/Projects/tecnoly/01-thumbnail.gif",
+          "assets/Projects/tecnoly/Frame 33.jpg",
+          "assets/Projects/tecnoly/Frame 34.jpg",
+          "assets/Projects/tecnoly/Frame 37.jpg",
+          "assets/Projects/tecnoly/Frame 38.jpg",
+          "assets/Projects/tecnoly/Frame 38.png",
+          "assets/Projects/tecnoly/Frame 41.jpg",
+          "assets/Projects/tecnoly/Frame 42.jpg",
+          "assets/Projects/tecnoly/Slide 16_9 - 21.png"
+        ]
+      },
+      {
+        slug: "viacel",
+        title: "Viacel",
+        year: "2025", cat: "Visual Identity",
+        desc: "Visual identity system for Viacel, an automated toll payment technology. Modern and minimalist logotype symbolizing movement, connectivity and progress. Green tones convey trust, sustainability and technology. Client: Kalts / Tecnoly.",
+        images: [
+          "assets/Projects/viacel/behance_Prancheta 1.png",
+          "assets/Projects/viacel/behance_Prancheta 1 cópia.png",
+          "assets/Projects/viacel/behance_Prancheta 1 cópia 2.png",
+          "assets/Projects/viacel/behance_Prancheta 1 cópia 3.png",
+          "assets/Projects/viacel/behance_Prancheta 1 cópia 4.png",
+          "assets/Projects/viacel/behance_Prancheta 1 cópia 5.png",
+          "assets/Projects/viacel/behance_Prancheta 1 cópia 6.png"
+        ]
+      },
+      {
+        slug: "safeway",
+        title: "Safeway",
+        year: "2025", cat: "SaaS for road safety",
+        desc: "Brand and design for Safeway, a road safety software that monitors driver behavior, analyzes data and delivers personalized training. Client: Tecnoly. Art Direction & Design: Bernardo Blom. Creative Direction: Natan Sá.",
+        video: "https://www.youtube.com/embed/TmALlDes6Tc",
+        images: [
+          "assets/Projects/Safeway/Title 1.gif",
+          "assets/Projects/Safeway/Assinatura Sfw.gif",
+          "assets/Projects/Safeway/Cores Logo.gif",
+          "assets/Projects/Safeway/Fonte Sora.gif",
+          "assets/Projects/Safeway/Carrossel.gif",
+          "assets/Projects/Safeway/2669f6ea-9afc-4048-96c4-86803d73ff86_rw_1920.gif",
+          "assets/Projects/Safeway/79b4b242-a002-4c7d-b198-28fda20ace5c_rw_1920.gif",
+          "assets/Projects/Safeway/61981cee-48ef-46b1-b4e1-f29fb6241f7e_rw_1920.jpg",
+          "assets/Projects/Safeway/92842729-604c-4bed-b71f-c62fc4227e84_rw_1920.jpg",
+          "assets/Projects/Safeway/c031ee5a-b210-4b67-b176-4533a2954ba0_rw_1920.jpg",
+          "assets/Projects/Safeway/cfd58909-d7c7-4533-bfb0-7618e3c829a1_rw_1920.jpg",
+          "assets/Projects/Safeway/f9e5b05d-e05c-4799-af4e-af71364d051f_rw_1920.jpg"
+        ]
+      },
+      {
+        slug: "liber",
+        title: "Liber",
+        year: "2025", cat: "B2B Marketing",
+        desc: "B2B design and marketing project for Liber, developing strategic visual communication and campaign assets for the brand.",
+        images: [
+          "assets/Projects/Liber/08d265f3-b5b8-4290-86b8-f375a70c224f_rw_1920.png",
+          "assets/Projects/Liber/0ecf9f27-ec7f-494f-a83e-9707785d6543_rw_1920.png",
+          "assets/Projects/Liber/30d76d9b-43c6-4d92-a13e-a51ed26efb8e_rw_1920.png",
+          "assets/Projects/Liber/656846a9-8b53-4110-b08f-6f8d5dd0f826_rw_1920.png",
+          "assets/Projects/Liber/6f05fd37-b192-4f7a-ab7e-797633dcd028_rw_1920.png",
+          "assets/Projects/Liber/c3724b2b-a0c6-4ec1-b8a0-822ebacbc145_rw_1920.png",
+          "assets/Projects/Liber/d1734efb-f281-4a59-b1d1-6aabcfd98052_rw_1920.png"
+        ]
+      },
+      {
+        slug: "cin-cin",
+        title: "CIN CIN Sapore da Brindare",
+        year: "2025", cat: "Restaurant Branding",
+        desc: "Branding for CIN CIN Sapore da Brindare, celebrating Italian culinary tradition and the art of toasting. The design conveys sophistication, warmth and authenticity.",
+        images: [
+          "assets/Projects/cin-cin/Prancheta 1.png",
+          "assets/Projects/cin-cin/Prancheta 2.png",
+          "assets/Projects/cin-cin/Prancheta 3.png",
+          "assets/Projects/cin-cin/Prancheta 4.png",
+          "assets/Projects/cin-cin/Prancheta 5.png",
+          "assets/Projects/cin-cin/Prancheta 6.png",
+          "assets/Projects/cin-cin/banner.png",
+          "assets/Projects/cin-cin/Restaurant-Wall-Poster-Mockup.jpg",
+          "assets/Projects/cin-cin/logo-paper.jpg",
+          "assets/Projects/cin-cin/logo-draw01-02.png",
+          "assets/Projects/cin-cin/logo-draw01-03.png",
+          "assets/Projects/cin-cin/logo-draw01-04.png",
+          "assets/Projects/cin-cin/logo-draw01-05.png",
+          "assets/Projects/cin-cin/logo-draw01-10.png",
+          "assets/Projects/cin-cin/logo-draw01_Prancheta 1.png",
+          "assets/Projects/cin-cin/logo-draw01_Prancheta 1 cópia.png",
+          "assets/Projects/cin-cin/logo-draw01_Prancheta 1 cópia 2.png",
+          "assets/Projects/cin-cin/logo-draw01_Prancheta 1 cópia 3.png",
+          "assets/Projects/cin-cin/logo-draw01_Prancheta 1 cópia 4.png"
+        ]
+      },
+      {
+        slug: "parallax",
+        title: "Parallax",
+        year: "2025", cat: "Creative Studio",
+        desc: "Identity for Parallax, a creative studio specializing in advertising campaigns with a modernist aesthetic, from production to post-production. Art Direction & Design: Bernardo Blom. Motion & Creative Direction: Natan Sá.",
+        images: [
+          "assets/Projects/Liber/Parallax/01-thumbnail.gif",
+          "assets/Projects/Liber/Parallax/02.png",
+          "assets/Projects/Liber/Parallax/03.png",
+          "assets/Projects/Liber/Parallax/04.png",
+          "assets/Projects/Liber/Parallax/05.png",
+          "assets/Projects/Liber/Parallax/06.png",
+          "assets/Projects/Liber/Parallax/07.png"
+        ]
+      },
+      {
+        slug: "stine",
+        title: "Stine",
+        year: "2025", cat: "Brand Guidelines",
+        desc: "Complete brand guidelines for Stine 2025. A comprehensive 32-page identity manual covering logo system, color palette, typography and brand applications across all touchpoints.",
+        images: Array.from({length: 32}, (_, i) => `assets/Projects/stine/pages/page-${String(i+1).padStart(2,'0')}.png`)
+      }
+    ];
+
+    const id      = window.__PROJECT_ID || new URLSearchParams(location.search).get('id');
+    const project = PROJECTS.find(pr => pr.slug === id);
+    const page    = document.getElementById('page');
+
+    if (!project) {
+      page.innerHTML = `
+        <div class="not-found">
+          <h2>Project not found</h2>
+          <p>This project doesn't exist or the link is incorrect.</p>
+          <a href="index.html">← Back to portfolio</a>
+        </div>`;
+    } else {
+      document.title = `${project.title} · Bernardo Blom`;
+
+      const linkHTML = project.link
+        ? `<a class="project-link" href="${project.link}" target="_blank" rel="noopener">
+             ${project.linkLabel || 'Visit live site'}
+             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+               <path d="M3 9l6-6M4 3h5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+             </svg>
+           </a>`
+        : '';
+
+      const videoHTML = project.video
+        ? `<div class="gallery-video-wrap">
+             <iframe src="${project.video}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+           </div>`
+        : '';
+
+      const imagesHTML = project.images
+        .map(src => `<div class="gallery-img-wrap">
+          <img class="gallery-img" src="${ep(src)}" alt="${project.title}" loading="lazy" />
+        </div>`)
+        .join('\n');
+
+      const sgHTML = (project.styleGuide || []).map(b => `
+        <section class="sg-block">
+          <div class="sg-head">
+            <h2 class="sg-title">${b.title}</h2>
+          </div>
+          <p class="sg-note">${b.note}</p>
+          <div class="sg-panel">
+            ${b.kind === 'icons'
+              ? `<div class="icon-grid">${AUTOMATIZE_ICONS.map(i =>
+                  `<div class="icon-cell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none">${i}</svg></div>`
+                ).join('')}</div>`
+              : b.kind === 'chips'
+              ? `<div class="chip-grid">${b.chips.map((label, i) =>
+                  `<div class="chip">
+                     <span class="chip-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none">${AUTOMATIZE_ICONS[i]}</svg></span>
+                     <span class="chip-label">${label}</span>
+                   </div>`
+                ).join('')}</div>`
+              : `<div class="sg-stack">${b.src.map(src =>
+                  `<img src="${ep(src)}" alt="${b.title}" loading="lazy" />`
+                ).join('')}</div>`}
+          </div>
+          ${b.legend ? `<div class="sg-legend">${b.legend.map(l => `<span><i></i>${l}</span>`).join('')}</div>` : ''}
+        </section>`).join('');
+
+      const em = project.liveEmbed;
+      const embedHTML = em ? `
+        <section class="embed">
+          <div class="embed-head">
+            <h2 class="embed-title">${em.title || 'The live site'}</h2>
+          </div>
+          <p class="embed-note">${em.note || ''}</p>
+          <div class="embed-shell" id="embedShell">
+            <div class="embed-bar">
+              <div class="embed-dots"><i></i><i></i><i></i></div>
+              <div class="embed-url">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <rect x="2.5" y="5.2" width="7" height="5.3" rx="1.2" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M4.3 5.2V3.9a1.7 1.7 0 0 1 3.4 0v1.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+                ${em.label || em.url}
+              </div>
+              <div class="embed-tools">
+                <div class="embed-vp" id="embedVp">
+                  <button type="button" data-vp="desktop" aria-pressed="true" title="Desktop view" aria-label="Desktop view">
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                      <rect x="1.5" y="2.5" width="13" height="9" rx="1.3" stroke="currentColor" stroke-width="1.4"/>
+                      <path d="M5.5 14h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                  <button type="button" data-vp="mobile" aria-pressed="false" title="Mobile view" aria-label="Mobile view">
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                      <rect x="4.5" y="1.5" width="7" height="13" rx="1.6" stroke="currentColor" stroke-width="1.4"/>
+                      <path d="M7 12.6h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <a class="embed-new" href="${em.url}" target="_blank" rel="noopener" title="Open in a new tab" aria-label="Open in a new tab">
+                  <svg width="13" height="13" viewBox="0 0 12 12" fill="none">
+                    <path d="M3 9l6-6M4 3h5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div class="embed-viewport" id="embedViewport">
+              <button type="button" class="embed-poster" id="embedPoster"
+                      style="background-image:url('${ep(em.poster || '')}')"
+                      aria-label="Load the live site preview">
+                <span class="embed-play">
+                  <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M3 2l6 4-6 4V2Z" fill="currentColor"/>
+                  </svg>
+                  Load the live site
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="embed-foot">
+            <span>Live third-party site, loaded on demand.</span>
+            <a href="${em.url}" target="_blank" rel="noopener">Open in a new tab \u2197</a>
+            <span class="embed-fallback">Preview failed to load. Use the link above.</span>
+          </div>
+        </section>` : '';
+
+      const galleryHead = project.galleryTitle
+        ? `<h2 class="gallery-title">${project.galleryTitle}</h2>
+           <p class="gallery-note">${project.galleryNote || ''}</p>`
+        : '';
+
+      page.innerHTML = `
+        <div class="project-header">
+          <a class="back-link" href="index.html#work">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            All projects
+          </a>
+          <div class="project-meta">
+            <span class="meta-cat">${project.cat},</span>
+            <span class="meta-year">${project.year}</span>
+          </div>
+          <h1 class="project-title">${project.title}</h1>
+          <p class="project-desc">${project.desc}</p>
+          ${linkHTML}
+        </div>
+        ${embedHTML}
+        ${sgHTML ? `<div class="sg">${sgHTML}</div>` : ''}
+        ${galleryHead}
+        <div class="gallery">
+          ${videoHTML}
+          ${imagesHTML}
+        </div>
+      `;
+
+      if (em) initLiveEmbed(em);
+    }
+
+    /* The live site runs in a scaled iframe: the frame gets the real desktop
+       (or phone) viewport width, then CSS transform shrinks it into whatever
+       space the column has, so the site renders its true layout instead of
+       reflowing to the container. */
+    function initLiveEmbed(em) {
+      const VIEWPORTS = {
+        desktop: { w: 1440, h: 900, pad: 0 },
+        mobile:  { w: 390,  h: 780, pad: 24 }
+      };
+
+      const shell    = document.getElementById('embedShell');
+      const viewport = document.getElementById('embedViewport');
+      const poster   = document.getElementById('embedPoster');
+      const tools    = document.getElementById('embedVp');
+
+      let mode   = window.innerWidth < 720 ? 'mobile' : 'desktop';
+      let frame  = null;
+      let stall  = null;
+
+      function layout() {
+        const { w: vw, h: vh, pad } = VIEWPORTS[mode];
+        const cw    = viewport.clientWidth;
+        const scale = Math.min(1, (cw - pad * 2) / vw);
+
+        viewport.style.height = (vh * scale + pad * 2) + 'px';
+        viewport.classList.toggle('is-mobile', mode === 'mobile');
+
+        if (frame) {
+          frame.style.width  = vw + 'px';
+          frame.style.height = vh + 'px';
+          frame.style.transform = `scale(${scale})`;
+          frame.style.left = ((cw - vw * scale) / 2) + 'px';
+          frame.style.top  = pad + 'px';
+        }
+      }
+
+      function setMode(next) {
+        mode = next;
+        tools.querySelectorAll('button').forEach(b =>
+          b.setAttribute('aria-pressed', String(b.dataset.vp === next))
+        );
+        layout();
+      }
+
+      function load() {
+        if (frame) return;
+        frame = document.createElement('iframe');
+        frame.src = em.url;
+        frame.title = (em.title || 'Live site') + ' preview';
+        frame.loading = 'lazy';
+        frame.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+        frame.addEventListener('load', () => {
+          clearTimeout(stall);
+          shell.classList.remove('is-stalled');
+        });
+        viewport.appendChild(frame);
+        poster.remove();
+        layout();
+        // no reliable cross-origin signal for a blocked frame, so fall back on time
+        stall = setTimeout(() => shell.classList.add('is-stalled'), 12000);
+      }
+
+      poster.addEventListener('click', load);
+      tools.addEventListener('click', e => {
+        const b = e.target.closest('button[data-vp]');
+        if (b) setMode(b.dataset.vp);
+      });
+      window.addEventListener('resize', layout);
+
+      setMode(mode);
+    }
+  </script>
+  <script src="nav.js" defer></script>
+</body>
+</html>

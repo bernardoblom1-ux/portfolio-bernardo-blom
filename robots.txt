@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /assets/presentations/
+Disallow: /decks.html
+Disallow: /deck.html
+Disallow: /project.html
+
+Sitemap: https://bernardoblom.com/sitemap.xml

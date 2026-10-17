@@ -1,0 +1,12 @@
+.DS_Store
+**/.DS_Store
+
+pdf-to-images.py
+assets/clients/AUDITORIA PARALLAX/
+
+# never published: deploy archive, local tooling, and the source decks/PDFs (kept private on purpose)
+portfolio-deploy.zip
+.claude/
+assets/presentations/*.pdf
+assets/Projects/**/*.pdf
+resume-source.html

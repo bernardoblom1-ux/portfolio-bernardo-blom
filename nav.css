@@ -1,0 +1,154 @@
+/* Shared site header, used by every page.
+   Colours come from each page's own :root (--bg, --text, --muted, --border,
+   --nav-bg, --accent-text). Icons: Lucide (lucide.dev), ISC licence.
+
+   The bar is the logo plus equal space above and below it. At the top of a page it
+   is pure black at 70%; once scrolled it adds a blur and a hairline and
+   shrinks, so the generous height costs nothing while reading. */
+
+:root {
+  --nav-logo: 48px;
+  --nav-pad: 22px;                       /* space above and below the logo */
+  --nav-h: calc(var(--nav-logo) + var(--nav-pad) * 2);
+}
+@media (max-width: 800px) { :root { --nav-logo: 40px; --nav-pad: 16px; } }
+
+/* One page width for the whole site: the edge-to-edge layout the "What I do" grid set.
+   Every section, the header and the footer use --edge as their side margin and no
+   max-width, so their left and right edges line up with each other.
+   The margin has two parts: a small base, and an extra 25px per side (50px less content
+   width in total) that fades in between 640px and 1000px, so phones keep their room. */
+:root {
+  --edge: calc(clamp(16px, 1.6vw, 24px) + clamp(0px, (100vw - 640px) * .07, 25px));
+  --max-w: none;
+}
+
+.skip-link {
+  position: absolute; left: 16px; top: -56px; z-index: 300;
+  padding: 10px 16px; background: var(--text); color: var(--bg);
+  font-size: 13px; font-weight: 500; text-decoration: none; transition: top .15s;
+}
+.skip-link:focus { top: 12px; }
+
+.site-nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 100;
+  height: var(--nav-h);
+  background: rgba(0,0,0,.7);            /* pure black at 70%, at the top and once scrolled */
+  box-shadow: inset 0 -1px 0 transparent;
+  transition: height .28s var(--ease, cubic-bezier(.22,.61,.36,1)), background .25s, box-shadow .25s;
+}
+/* custom properties are resolved where they are declared, so the compact size
+   re-declares --nav-h here instead of letting it inherit the tall one */
+.site-nav.scrolled {
+  --nav-logo: 36px; --nav-pad: 14px;
+  --nav-h: calc(var(--nav-logo) + var(--nav-pad) * 2);
+  background: rgba(0,0,0,.7);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+@media (max-width: 800px) {
+  .site-nav.scrolled { --nav-logo: 34px; --nav-pad: 12px; }
+}
+.site-nav.menu-open {
+  background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none;
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+.site-nav :focus-visible { outline: 2px solid var(--accent-blue, #d4d4da); outline-offset: 3px; }
+
+/* logo and links together on the left, actions on the right */
+.nav-inner {
+  max-width: var(--max-w); height: 100%; margin: 0 auto;
+  padding: 0 var(--edge);
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; column-gap: clamp(20px, 2.4vw, 40px);
+}
+.nav-logo { justify-self: start; display: inline-flex; align-items: center; transition: opacity .2s; }
+.nav-logo:hover { opacity: .8; }
+.nav-logo img { display: block; height: var(--nav-logo); width: auto; transition: height .28s var(--ease, cubic-bezier(.22,.61,.36,1)); }
+/* The mark takes one full turn the moment the page loads, then again every 10 seconds: a
+   small wind-up the other way, a quick sweep that overshoots a few degrees, and a soft
+   settle. In between it is still. */
+.nav-logo img { transform-origin: 50% 50%; animation: logoSpin 10s infinite .25s; will-change: transform; }
+.nav-logo:hover img { animation-play-state: paused; }
+@keyframes logoSpin {
+  0%       { transform: rotate(0deg);   animation-timing-function: cubic-bezier(.5, 0, .2, 1); }
+  2%       { transform: rotate(-14deg); animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  7%       { transform: rotate(373deg); animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  10%, 100% { transform: rotate(360deg); }
+}
+
+.nav-links { justify-self: start; display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.nav-links a {
+  position: relative; display: block; padding: 12px 16px;
+  font-size: 14px; font-weight: 500; letter-spacing: -.01em; white-space: nowrap;
+  color: var(--muted); text-decoration: none; transition: color .2s;
+}
+/* a line that grows from the left on hover, and stays on the current item */
+.nav-links a::after {
+  content: ''; position: absolute; left: 16px; right: 16px; bottom: 6px; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: left;
+  transition: transform .3s var(--ease, cubic-bezier(.22,.61,.36,1));
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-links a[aria-current] { color: var(--text); }
+.nav-links a[aria-current]::after { transform: scaleX(1); height: 2px; background: var(--accent-text); }
+
+.nav-actions { justify-self: end; display: flex; align-items: center; gap: 10px; }
+.nav-icon, .nav-toggle {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border: 1px solid var(--border); background: transparent; color: var(--text);
+  transition: border-color .2s, background .2s; cursor: pointer; text-decoration: none;
+}
+.nav-icon:hover, .nav-toggle:hover { border-color: var(--text); background: rgba(255,255,255,.06); }
+.nav-icon svg { width: 18px; height: 18px; }
+.nav-cta, .menu-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 44px; padding: 0 20px;
+  background: var(--text); color: var(--bg);
+  font-size: 14px; font-weight: 500; letter-spacing: -.01em; text-decoration: none;
+  transition: background .2s;
+}
+.nav-cta:hover, .menu-cta:hover { background: var(--accent-text); }
+.nav-cta svg, .menu-cta svg { width: 16px; height: 16px; transition: transform .25s var(--ease, cubic-bezier(.22,.61,.36,1)); }
+.nav-cta:hover svg, .menu-cta:hover svg { transform: translateY(2px); }
+
+/* the menu: hidden on desktop, a full-width panel under the bar on small screens */
+.nav-toggle { display: none; justify-self: end; }
+.nav-toggle svg { width: 20px; height: 20px; }
+.nav-toggle .i-close, .menu-open .nav-toggle .i-menu { display: none; }
+.menu-open .nav-toggle .i-close { display: block; }
+.menu-panel { display: none; }
+
+@media (max-width: 800px) {
+  .nav-inner { grid-template-columns: 1fr auto; }
+  .nav-links, .nav-actions { display: none; }
+  .nav-toggle { display: grid; }
+  .menu-panel {
+    display: flex; flex-direction: column; position: absolute; left: 0; right: 0; top: 100%;
+    background: var(--bg); box-shadow: inset 0 1px 0 var(--border), 0 28px 44px rgba(0,0,0,.55);
+    height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); overflow-y: auto;   /* covers the page, so nothing shows through */
+    visibility: hidden; opacity: 0; transform: translateY(-8px);
+    transition: opacity .2s, transform .25s var(--ease, cubic-bezier(.22,.61,.36,1)), visibility 0s .25s;
+  }
+  .menu-open .menu-panel { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
+  .menu-panel ul { list-style: none; margin: 0; padding: 6px var(--edge) 0; }
+  .menu-panel li a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0; border-bottom: 1px solid var(--border);
+    font-size: 26px; font-weight: 400; letter-spacing: -.04em; color: var(--text); text-decoration: none;
+  }
+  .menu-panel li a svg { width: 20px; height: 20px; color: var(--muted); flex-shrink: 0; }
+  .menu-panel li a[aria-current] { color: var(--accent-text); }
+  .menu-actions { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 22px var(--edge) 28px; }
+  .menu-icon-link {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 44px;
+    border: 1px solid var(--border); color: var(--text); font-size: 14px; font-weight: 500; text-decoration: none;
+  }
+  .menu-icon-link svg { width: 16px; height: 16px; }
+}
+html.menu-lock { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav, .site-nav *, .site-nav *::before, .site-nav *::after { transition: none !important; }
+  .nav-logo img { animation: none !important; }
+}

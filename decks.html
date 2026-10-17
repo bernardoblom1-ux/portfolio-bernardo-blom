@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business presentations &middot; Bernardo Blom</title>
+  <meta name="description" content="Client presentation decks by Bernardo Blom. Access on request." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nav.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      color-scheme: dark;
+      --raised: #141414;       /* chips, tags and logo plates: one step above the cards */
+      --raised-2: #1c1c1c;
+      --text-2: #a9a9b0;
+      --border-strong: #333333;
+      --nav-bg: rgba(0,0,0,.7);
+      --bg: #000000;
+      --bg-alt: #0a0a0a;
+      --text: #ececec;
+      --muted: #a3a3ab;        /* darkened for AA contrast on light bg */
+      --accent: #00a877;       /* decorative only */
+      --accent-text: #35d3a2;  /* text-safe green, 4.5:1 or better */
+      --accent-blue: #d4d4da;
+      --border: #222222;
+      --ease: cubic-bezier(.22,.61,.36,1);
+      --shadow-card: 0 20px 56px rgba(0,0,0,.55);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; -webkit-user-drag: none; user-select: none; }
+
+    /* ── SHARED ──────────────────────────── */
+    .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--edge); }
+    .section-pad { padding-top: clamp(64px, 9vw, 100px); padding-bottom: clamp(64px, 9vw, 100px); }
+    .label { font-size: 11px; font-weight: 500; letter-spacing: .4px; color: var(--accent-text); margin-bottom: 14px; }
+    .section-h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 400; letter-spacing: -.035em; line-height: 1.05; color: var(--text); margin-bottom: clamp(36px, 5vw, 52px); }
+
+    /* ── PROJECTS ────────────────────────── */
+    #work { padding-top: clamp(64px, 9vw, 100px); padding-bottom: clamp(64px, 9vw, 100px); }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      cursor: pointer; overflow: hidden;
+      background: var(--bg-alt); border: 1px solid var(--border);
+      text-decoration: none; display: block;
+      transition: transform .25s cubic-bezier(.22,.61,.36,1), box-shadow .25s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-card); }
+    .card-thumb-wrap { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--bg-alt); }
+    .card-thumb { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s cubic-bezier(.22,.61,.36,1); }
+    .card:hover .card-thumb { transform: scale(1.04); }
+    .card-thumb.broken { opacity: 0; }
+    .card-body   { padding: 16px 18px 18px; }
+    .card-year   { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 3px; }
+    .card-name   { font-size: 14px; font-weight: 400; color: var(--text); letter-spacing: -.3px; line-height: 1.2; }
+    .card-cat    { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    /* ── PRESENTATION DECKS ──────────────── */
+    .deck-group + .deck-group { margin-top: clamp(44px, 6vw, 68px); }
+    .deck-group-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .deck-client { font-size: clamp(19px, 2vw, 24px); font-weight: 400; letter-spacing: -.035em; color: var(--text); }
+    .deck-count { font-size: 11px; font-weight: 500; letter-spacing: .4px; color: var(--muted); }
+    .deck-group-note { font-size: 13.5px; color: var(--muted); line-height: 1.7; max-width: 640px; margin: 8px 0 22px; }
+    /* the same three-column, 12px-gap rhythm as the home page grids */
+    .deck-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 1000px) { .deck-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .deck-grid { grid-template-columns: 1fr; } }
+
+    /* the cover is artwork, not a crop: show the whole slide */
+    .deck .card-thumb-wrap { background: var(--bg); border-bottom: 1px solid var(--border); }
+    .deck .card-thumb { object-fit: contain; }
+    .deck-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-top: 9px; }
+    .deck-foot {
+      display: flex; align-items: center; gap: 7px;
+      margin-top: 13px; font-size: 12px; font-weight: 500; color: var(--text);
+    }
+    .deck-foot svg { transition: transform .2s; }
+    .deck[target] .deck-foot svg { transition: transform .2s; }
+    .deck[target]:hover .deck-foot svg { transform: translate(2px, -2px); }
+    .deck:not([target]):hover .deck-foot svg { transform: translateX(3px); }
+
+    /* access gate in front of the decks */
+    .deck-gate {
+      border: 1px solid var(--border);
+      background: var(--bg-alt);
+      padding: clamp(30px, 4vw, 52px);
+      max-width: 520px;
+    }
+    .deck-gate-icon {
+      display: grid; place-items: center;
+      width: 42px; height: 42px;
+      background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .deck-gate h3 { font-size: 19px; font-weight: 400; letter-spacing: -.03em; color: var(--text); }
+    .deck-gate p { font-size: 13.5px; color: var(--muted); line-height: 1.7; margin-top: 8px; }
+    .deck-gate-form { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+    .deck-gate-input {
+      flex: 1; min-width: 160px;
+      font-family: inherit; font-size: 14px; color: var(--text);
+      padding: 12px 15px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      transition: border-color .2s;
+    }
+    .deck-gate-input:focus { outline: none; border-color: var(--text); }
+    .deck-gate-btn {
+      font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+      padding: 12px 22px;
+      border: 1.5px solid var(--text); background: var(--text); color: var(--bg);
+      transition: opacity .2s;
+    }
+    .deck-gate-btn:hover { opacity: .85; }
+    .deck-gate-err { font-size: 12.5px; color: #e8a15d; margin-top: 12px; }
+    .deck-gate.shake { animation: deck-shake .3s; }
+    @keyframes deck-shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    @media (prefers-reduced-motion: reduce) { .deck-gate.shake { animation: none; } }
+
+    /* ── FOOTER ──────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px var(--edge);
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: var(--max-w); margin: 0 auto;
+    }
+    footer p { font-size: 13px; color: var(--muted); }
+
+    /* Resume download. Deliberately outside the gated container: a recruiter
+       should not need the deck access code to pick up a CV. */
+    .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .page-head .section-h2 { margin-bottom: 0; }
+    .resume-btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 11px 19px;
+      font-size: 13px; font-weight: 500; color: var(--text);
+      background: var(--bg); border: 1.5px solid var(--text);
+      text-decoration: none; white-space: nowrap;
+      transition: background .2s, color .2s;
+    }
+    .resume-btn:hover { background: var(--text); color: var(--bg); }
+    .resume-btn svg { flex-shrink: 0; transition: transform .2s; }
+    .resume-btn:hover svg { transform: translateY(2px); }
+    .page-head-gap { margin-bottom: clamp(36px, 5vw, 52px); }
+
+    /* the page leads with the decks, so it needs the nav clearance itself */
+    .decks-page { padding-top: calc(var(--nav-h) + 56px); }
+  </style>
+  <script>
+    document.documentElement.classList.add('js');
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- NAV -->
+  <nav id="nav" class="site-nav" aria-label="Primary">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Bernardo Blom, home">
+        <img src="assets/SVG/Ativo%201logo-blom.svg" alt="Bernardo Blom" width="632" height="641" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#stacks" data-spy="stacks">What I do</a></li>
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="index.html#experience" data-spy="experience">Experience</a></li>
+        <li><a href="decks.html" aria-current="page">Decks</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="nav-icon" href="https://www.linkedin.com/in/bernardo-blom/" target="_blank" rel="noopener" aria-label="LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <a class="nav-cta" href="Bernardo-Blom-Resume.pdf" download>Resume <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></a>
+      </div>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu-panel" aria-label="Open menu"><svg class="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg><svg class="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <div class="menu-panel" id="menu-panel">
+      <ul>
+      <li><a href="index.html#stacks" data-spy="stacks">What I do<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>
+      <li><a href="index.html#work">Work<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>
+      <li><a href="index.html#experience" data-spy="experience">Experience<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>
+      <li><a href="decks.html" aria-current="page">Decks<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>
+      </ul>
+      <div class="menu-actions">
+        <a class="menu-cta" href="Bernardo-Blom-Resume.pdf" download>Resume <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></a>
+        <a class="menu-icon-link" href="https://www.linkedin.com/in/bernardo-blom/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- DECKS -->
+  <main id="main" class="wrap section-pad decks-page">
+    <div class="page-head page-head-gap">
+      <h1 class="section-h2">Business presentations</h1>
+      <a class="resume-btn"
+         href="Bernardo-Blom-Resume.pdf" download>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M7 1.5v8M3.5 6.5L7 10l3.5-3.5M2 12h10" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Download Resume (PDF)
+      </a>
+    </div>
+    <div id="decks"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Bernardo Blom</p>
+    <p>S&atilde;o Jos&eacute; dos Campos, SP</p>
+  </footer>
+
+  <script src="decks-common.js"></script>
+  <script>
+    function ep(raw) {
+      if (raw.startsWith('http')) return raw;
+      return raw.split('/').map(encodeURIComponent).join('/');
+    }
+
+
+    const decksEl = document.getElementById('decks');
+
+    function renderDecks(instant) {
+      decksEl.innerHTML = '';
+      DECKS.forEach(group => {
+        const sec = document.createElement('section');
+        sec.className = 'deck-group';
+        sec.innerHTML = `
+          <div class="deck-group-head">
+            <h3 class="deck-client">${group.client}</h3>
+            <span class="deck-count">${group.items.length} deck${group.items.length > 1 ? 's' : ''}</span>
+          </div>
+          <p class="deck-group-note">${group.note}</p>
+          <div class="deck-grid">
+            ${group.items.map((d, i) => `
+              <a class="card deck"
+                 href="${d.href}">
+                <div class="card-thumb-wrap">
+                  <img class="card-thumb" src="${ep(d.cover)}" alt="${d.title} cover slide"
+                       loading="lazy" onerror="this.classList.add('broken')" />
+                </div>
+                <div class="card-body">
+                  <p class="card-year">${d.meta}</p>
+                  <p class="card-name">${d.title}</p>
+                  <p class="deck-desc">${d.desc}</p>
+                  <span class="deck-foot">
+                    ${d.cta}
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6h8M6.5 2.5L10 6l-3.5 3.5" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </div>
+              </a>`).join('')}
+          </div>`;
+        decksEl.appendChild(sec);
+      });
+    }
+
+    if (deckUnlocked()) renderDecks(false);
+    else renderDeckGate(decksEl, () => renderDecks(true));
+
+
+  </script>
+  <script src="nav.js" defer></script>
+</body>
+</html>
