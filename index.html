@@ -121,10 +121,13 @@
       -webkit-mask-image: linear-gradient(to right, transparent 0, transparent 12%, #000 58%);
               mask-image: linear-gradient(to right, transparent 0, transparent 12%, #000 58%);
     }
-    @media (max-width: 800px) {                                       /* phones: the text sits at the foot, so fade from the bottom */
+    @media (max-width: 800px) {
+      /* phones: the drawing gets its own stage above the text (the text starts below it, so
+         they never meet), and the grid fades out from the bottom behind the text */
+      #hero .hero-inner { padding-top: calc(var(--nav-h) + clamp(340px, 100vw, 460px)); }   /* the home grows taller than the screen on phones, on purpose */
       #heroLogo {
-        -webkit-mask-image: linear-gradient(to top, transparent 0, transparent 30%, #000 70%);
-                mask-image: linear-gradient(to top, transparent 0, transparent 30%, #000 70%);
+        -webkit-mask-image: linear-gradient(to top, transparent 0, transparent 22%, #000 48%);
+                mask-image: linear-gradient(to top, transparent 0, transparent 22%, #000 48%);
       }
     }
     /* two blocks on one left edge: the headline under the header, the rest at the foot of the screen */
@@ -1411,10 +1414,10 @@
         // on phones the upper part, above the text
         box = W >= 900
           ? { l: W * .42, r: W * 1.06, t: navH + 12, b: H * .97 }
-          : { l: -W * .02, r: W * 1.04, t: navH + 8, b: textT - 8 };
+          : { l: W * .02, r: W * 1.02, t: navH + 4, b: textT - 28 };   // phones: the stage the hero reserves above the text
         // where the strokes are erased: the text, the buttons and the status bar, padded
         clear = [...hero.querySelectorAll('.hero-id, .hero-cta .btn, .hero-meta')].map(rel).map(b => ({ l: b.l - 28, r: b.r + 28, t: b.t - 24, b: b.b + 20 }));
-        if (W < 800 || box.r - box.l < 160 || box.b - box.t < 200) { box = null; draw(0); return; }   // phones: only the ground grid, the drawing would crowd the text
+        if (box.r - box.l < 160 || box.b - box.t < 200) { box = null; draw(0); return; }
         // fit: the widest extent the loop ever reaches (guides included), measured once
         let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
         const take = q => { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); };
