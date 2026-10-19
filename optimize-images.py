@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+"""Make the project images load fast without losing quality.
+
+Nothing here is lossy. For every project image it writes, under assets/_r/:
+  - PNG: copies at 960, 1600 and 2400 px wide (only those smaller than the original),
+    resampled with Lanczos and saved as PNG, then recompressed losslessly with oxipng.
+    The page lets the browser pick the one its screen needs; the original stays as the
+    largest choice, so a big screen still gets every pixel.
+  - Animated GIF: a still first frame (PNG, 960 px) for the home cards, which load the
+    animation only on hover. The animation itself is tried as lossless animated WebP
+    (identical pixels) at full size and at 960 px; a WebP is kept only where it is smaller
+    than the GIF, otherwise the GIF is served. GIFs of photographic footage often do not
+    shrink losslessly, and nothing here is allowed to lose quality.
+  - JPEG: nothing. Resizing a JPEG means encoding it again, which loses quality, so the
+    original is served as is.
+Then it writes img-sizes.js, the map the pages read: each image's size and its copies.
+
+Run after adding or changing project images:  python3 optimize-images.py
+It skips copies that already exist and are newer than their source.
+"""
+import json, os, sys, unicodedata
+from PIL import Image, ImageSequence
+import oxipng
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+SRC = os.path.join(ROOT, 'assets', 'Projects')
+OUT = os.path.join(ROOT, 'assets', '_r')
+WIDTHS = (960, 1600, 2400)
+THUMB = 960
+
+nfc = lambda s: unicodedata.normalize('NFC', s)
+
+
+def rel(p):
+    return nfc(os.path.relpath(p, ROOT)).replace(os.sep, '/')
+
+
+def out_path(src, suffix):
+    """assets/Projects/a/b.png + '.1600.png' -> assets/_r/Projects/a/b.1600.png"""
+    r = os.path.relpath(src, os.path.join(ROOT, 'assets'))
+    stem = os.path.splitext(r)[0]
+    p = os.path.join(OUT, nfc(stem) + suffix)
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    return p
+
+
+def fresh(dst, src):
+    return os.path.exists(dst) and os.path.getmtime(dst) >= os.path.getmtime(src)
+
+
+def save_png(im, dst):
+    im.save(dst, 'PNG', optimize=True)
+    oxipng.optimize(dst, level=2)                 # lossless: the pixels do not change
+
+
+def do_png(src, im, entry):
+    w, h = im.size
+    for tw in WIDTHS:
+        if tw >= w:
+            continue
+        dst = out_path(src, '.%d.png' % tw)
+        if not fresh(dst, src):
+            th = round(h * tw / w)
+            save_png(im.resize((tw, th), Image.LANCZOS), dst)
+        entry['r'].append(tw)
+
+
+def frames_of(im):
+    out, durs = [], []
+    for fr in ImageSequence.Iterator(im):
+        out.append(fr.convert('RGBA'))            # each frame fully composed, as the browser shows it
+        durs.append(fr.info.get('duration', im.info.get('duration', 80)) or 80)
+    return out, durs
+
+
+def do_gif(src, im, entry):
+    w, h = im.size
+    full = out_path(src, '.webp')
+    thumb = out_path(src, '.%d.webp' % THUMB)
+    poster = out_path(src, '.%d.png' % THUMB)
+    if not fresh(poster, src):
+        frames, durs = frames_of(im)
+        loop = im.info.get('loop', 0)
+        kw = dict(save_all=True, lossless=True, quality=100, method=4, loop=loop, duration=durs)
+        frames[0].save(full, 'WEBP', append_images=frames[1:], **kw)
+        th = round(h * THUMB / w)
+        small = [f.resize((THUMB, th), Image.LANCZOS) for f in frames]
+        small[0].save(thumb, 'WEBP', append_images=small[1:], **kw)
+        save_png(small[0], poster)
+    gif = os.path.getsize(src)
+    # keep a WebP only where it is the smaller file
+    if os.path.exists(full) and os.path.getsize(full) >= gif:
+        os.remove(full)
+    entry['webp'] = os.path.exists(full)
+    if os.path.exists(thumb) and os.path.getsize(thumb) >= gif:
+        os.remove(thumb)
+    entry['anim'] = rel(thumb) if os.path.exists(thumb) else rel(src)     # what a card plays on hover
+    entry['poster'] = THUMB
+
+
+def main():
+    sizes = {}
+    files = []
+    for d, _, fs in os.walk(SRC):
+        for f in fs:
+            if f.lower().endswith(('.png', '.gif', '.jpg', '.jpeg')):
+                files.append(os.path.join(d, f))
+    files.sort()
+    for i, src in enumerate(files, 1):
+        try:
+            im = Image.open(src)
+        except Exception as e:
+            print('skip', rel(src), e)
+            continue
+        w, h = im.size
+        entry = {'w': w, 'h': h, 'r': []}
+        ext = os.path.splitext(src)[1].lower()
+        animated = ext == '.gif' and getattr(im, 'n_frames', 1) > 1
+        if animated:
+            do_gif(src, im, entry)
+        elif ext == '.png' and w > WIDTHS[0]:
+            do_png(src, im.convert('RGBA') if im.mode not in ('RGB', 'RGBA', 'L', 'LA') else im, entry)
+        if not entry['r']:
+            del entry['r']
+        sizes[rel(src)] = entry
+        print('%3d/%d %s %s' % (i, len(files), rel(src), entry.get('r', '')), flush=True)
+
+    js = ('// Generated by optimize-images.py: each project image\'s size and its lossless copies\n'
+          '// under assets/_r/ (r: widths of PNG copies; webp: a smaller animated WebP twin of a\n'
+          '// GIF; poster: width of the still first frame; anim: what a card plays on hover).\n'
+          '// Do not edit by hand.\n'
+          'window.IMGS = ' + json.dumps(sizes, ensure_ascii=False, separators=(',', ':')) + ';\n')
+    with open(os.path.join(ROOT, 'img-sizes.js'), 'w', encoding='utf-8') as f:
+        f.write(js)
+    print('img-sizes.js:', len(sizes), 'images')
+
+
+if __name__ == '__main__':
+    sys.exit(main())

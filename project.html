@@ -244,6 +244,7 @@
     }
     .gallery-video-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
 
+    picture { display: contents; }                      /* lets <picture> wrap an image without changing the layout */
     .gallery-img-wrap { width: 100%; overflow: hidden; background: var(--bg-alt); }
     .gallery-img { display: block; width: 100%; height: auto; }
 
@@ -256,6 +257,7 @@
     .not-found p  { font-size: 14px; color: var(--muted); }
     .not-found a  { font-size: 13px; font-weight: 600; color: var(--accent-text); text-decoration: none; border-bottom: 1.5px solid var(--accent-text); padding-bottom: 2px; margin-top: 4px; }
   </style>
+  <link rel="stylesheet" href="material.css" />
 </head>
 <body>
   <a class="skip-link" href="#page">Skip to content</a>
@@ -293,10 +295,44 @@
 
   <main class="page" id="page"></main>
 
+  <script src="img-sizes.js"></script>
   <script>
     function ep(raw) {
       if (raw.startsWith('http')) return raw;
       return raw.split('/').map(encodeURIComponent).join('/');
+    }
+
+    // Responsive images. optimize-images.py makes lossless display-size copies of the
+    // project images under assets/_r/ and lists them in img-sizes.js (window.IMGS). pic()
+    // builds the tag: PNGs get a srcset so the browser downloads only the size its screen
+    // needs (the original stays the largest choice); animated GIFs are served as their
+    // lossless WebP twin where that is smaller; card thumbnails of animations show a still
+    // first frame and load the animation only on hover. Width and height are always set, so
+    // nothing jumps while images arrive. Anything not in the map is served as before.
+    function rpath(raw, suffix) {
+      return 'assets/_r/' + raw.normalize('NFC').slice('assets/'.length).replace(/\.[^.\/]+$/, '') + suffix;
+    }
+    function pic(raw, o) {
+      o = o || {};
+      const m = raw && (window.IMGS || {})[raw.normalize('NFC')];
+      const cls = o.cls ? ` class="${o.cls}"` : '', alt = ` alt="${o.alt || ''}"`, extra = o.extra || '';
+      const load = ` loading="${o.eager ? 'eager' : 'lazy'}" decoding="async"` + (o.eager ? ' fetchpriority="high"' : '');
+      if (!m) return `<img${cls} src="${ep(raw)}"${alt}${load}${extra}>`;
+      const dim = ` width="${m.w}" height="${m.h}"`;
+      if (o.still && m.poster) {                                      // a project's animation: its first frame at once, the animation swapped in when it has arrived
+        const full = m.webp ? rpath(raw, '.webp') : raw;
+        return `<img${cls} src="${ep(rpath(raw, '.' + m.poster + '.png'))}" data-full="${ep(full)}"${alt}${dim} decoding="async"${extra}>`;
+      }
+      if (o.thumb && m.poster) return `<img${cls} src="${ep(rpath(raw, '.' + m.poster + '.png'))}" data-anim="${ep(m.anim || raw)}"${alt}${dim}${load}${extra}>`;
+      if (m.webp) {
+        return `<picture><source type="image/webp" srcset="${ep(rpath(raw, '.webp'))}"><img${cls} src="${ep(raw)}"${alt}${dim}${load}${extra}></picture>`;
+      }
+      if (m.r && m.r.length) {
+        const set = m.r.map(w => `${ep(rpath(raw, '.' + w + '.png'))} ${w}w`).concat(`${ep(raw)} ${m.w}w`).join(', ');
+        const mid = m.r[Math.min(1, m.r.length - 1)];
+        return `<img${cls} src="${ep(rpath(raw, '.' + mid + '.png'))}" srcset="${set}" sizes="${o.sizes || '100vw'}"${alt}${dim}${load}${extra}>`;
+      }
+      return `<img${cls} src="${ep(raw)}"${alt}${dim}${load}${extra}>`;
     }
 
     // icon set lifted from the project's component sheet (vector, recoloured with currentColor)
@@ -598,8 +634,8 @@
         : '';
 
       const imagesHTML = project.images
-        .map(src => `<div class="gallery-img-wrap">
-          <img class="gallery-img" src="${ep(src)}" alt="${project.title}" loading="lazy" />
+        .map((src, i) => `<div class="gallery-img-wrap">
+          ${pic(src, { cls: 'gallery-img', alt: project.title, eager: i === 0, still: true, sizes: '100vw' })}
         </div>`)
         .join('\n');
 
@@ -622,7 +658,7 @@
                    </div>`
                 ).join('')}</div>`
               : `<div class="sg-stack">${b.src.map(src =>
-                  `<img src="${ep(src)}" alt="${b.title}" loading="lazy" />`
+                  pic(src, { alt: b.title, sizes: '(max-width: 800px) 100vw, 70vw' })
                 ).join('')}</div>`}
           </div>
           ${b.legend ? `<div class="sg-legend">${b.legend.map(l => `<span><i></i>${l}</span>`).join('')}</div>` : ''}
@@ -789,6 +825,21 @@
 
       setMode(mode);
     }
+  </script>
+  <script>
+    // animations in the gallery (tens of MB, kept lossless) show their first frame at once;
+    // each animation is fetched as it nears the screen and replaces its still frame only
+    // once it has fully arrived, so the page is readable while they load
+    (function () {
+      const run = () => {
+        const imgs = document.querySelectorAll('img[data-full]');
+        const swap = img => { const src = img.dataset.full; img.removeAttribute('data-full'); const pre = new Image(); pre.onload = () => { img.src = src; }; pre.src = src; };
+        if (!('IntersectionObserver' in window)) { imgs.forEach(swap); return; }
+        const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); swap(e.target); } }), { rootMargin: '600px 0px' });
+        imgs.forEach(img => io.observe(img));
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+    })();
   </script>
   <script src="nav.js" defer></script>
 </body>

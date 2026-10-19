@@ -1,0 +1,107 @@
+/* Material Design 3 layer, shared by every page and loaded after each page's own styles.
+   It keeps the site's palette (pure black, hairline borders, the lavender, yellow and white
+   accents) and brings Material's shape scale, state layers and motion:
+   - shape: extra small 4px (text fields), small 8px (chips and tags), medium 12px (cards,
+     icon containers, menus), large 16px (big panels), full (buttons, icon buttons, badges, dots)
+   - state layers: a white overlay at 8% on hover and 10% on focus and press, painted under
+     the content so images and text stay untouched
+   - motion: the emphasized curve for every transition that used --ease, standard durations */
+
+:root {
+  --md-shape-xs: 4px;
+  --md-shape-s: 8px;
+  --md-shape-m: 12px;
+  --md-shape-l: 16px;
+  --md-shape-xl: 28px;
+  --md-shape-full: 999px;
+  --md-ease: cubic-bezier(.2, 0, 0, 1);
+  --md-ease-decel: cubic-bezier(.05, .7, .1, 1);
+  --md-ease-accel: cubic-bezier(.3, 0, .8, .15);
+  --md-state-hover: rgba(255, 255, 255, .08);
+  --md-state-press: rgba(255, 255, 255, .1);
+  --md-layer-hover: inset 0 0 0 100vmax var(--md-state-hover);
+  --md-layer-press: inset 0 0 0 100vmax var(--md-state-press);
+  --ease: var(--md-ease);
+}
+
+/* ── full: buttons, icon buttons, badges and dots ── */
+.btn, .nav-cta, .menu-cta, .resume-btn, .deck-gate-btn, .project-link, .embed-new, .skip-link,
+.nav-icon, .nav-toggle, .menu-icon-link, .embed-vp button, .tl-badge, .embed-url {
+  border-radius: var(--md-shape-full);
+}
+.avail-dot, .exp-counter-dot, .featured-label .dot, .embed-dots i, .contact-spec .avail::before,
+.sg-legend i, .embed-play {
+  border-radius: 50%;
+}
+
+/* ── small: chips and tags ── */
+.stack-tags li, .tl-tag, .featured-tag, .chip, .tl-note {
+  border-radius: var(--md-shape-s);
+}
+
+/* ── medium: cards, icon containers, menus, media ── */
+.card, .stack-card, .featured, .tl-card, .client-cell, .sg-panel, .icon-cell, .embed-shell,
+.gallery-video-wrap, .gallery-img-wrap, .dv-slide, .menu-panel li a, .stack-icon, .chip-icon,
+.deck-gate-icon, .slideshow-wrap {
+  border-radius: var(--md-shape-m);
+}
+.card, .featured, .tl-card, .client-cell, .embed-shell, .gallery-video-wrap, .gallery-img-wrap, .dv-slide {
+  overflow: hidden;
+}
+
+/* ── large: the big panels ── */
+.stack-stage, .exp-counter, .deck-gate {
+  border-radius: var(--md-shape-l);
+}
+.contact-spec {
+  border: 1px solid var(--border);
+  border-radius: var(--md-shape-l);
+  overflow: hidden;
+}
+.contact-spec > div:first-child { border-left: none; }
+
+/* ── extra small: text fields ── */
+.deck-gate-input { border-radius: var(--md-shape-xs); }
+
+/* ── state layers ── */
+.btn, .nav-cta, .menu-cta, .resume-btn, .deck-gate-btn, .project-link, .embed-new,
+.nav-icon, .nav-toggle, .menu-icon-link, .menu-panel li a, .chip, .icon-cell,
+.card, .featured, .tl-card, .client-cell, .stack-card {
+  transition-property: border-color, background-color, color, box-shadow, opacity, transform;
+  transition-duration: .2s;
+  transition-timing-function: var(--md-ease);
+}
+.btn--line:hover, .nav-icon:hover, .nav-toggle:hover, .menu-icon-link:hover, .menu-panel li a:hover,
+.chip:hover, .icon-cell:hover, .project-link:hover, .embed-new:hover,
+.card:hover, .featured:hover, .tl-card:hover, .client-cell:hover, .stack-card:hover {
+  box-shadow: var(--md-layer-hover);
+}
+.stack-card.is-active:hover { box-shadow: inset 3px 0 0 var(--card), var(--md-layer-hover); }
+.btn:active, .nav-cta:active, .menu-cta:active, .resume-btn:active, .deck-gate-btn:active,
+.nav-icon:active, .nav-toggle:active, .chip:active, .card:active, .stack-card:active {
+  box-shadow: var(--md-layer-press);
+}
+.stack-card.is-active:active { box-shadow: inset 3px 0 0 var(--card), var(--md-layer-press); }
+/* filled buttons keep their own colour and take the layer as a tint */
+.btn--solid:hover, .nav-cta:hover, .menu-cta:hover { box-shadow: inset 0 0 0 100vmax rgba(0, 0, 0, .08); }
+
+/* ── focus: Material's focus ring follows the shape ── */
+:focus-visible { outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .01ms !important; }
+}
+
+/* ── sections as Material surfaces: each home section is a sheet with extra-large corners,
+   alternating between two surface tones, with a strip of the black page between them ── */
+main > .sheet {
+  --sheet: #0d0e12;                       /* surface container lowest */
+  margin: 0 clamp(6px, 1vw, 14px) clamp(8px, 1vw, 14px);
+  border-radius: var(--md-shape-xl);
+  background: var(--sheet);
+  overflow: clip;                          /* clips the corners without breaking the sticky stage */
+}
+main > #work.sheet, main > #experience.sheet { --sheet: #121318; }   /* surface */
+main > .sheet.wrap { margin-left: clamp(6px, 1vw, 14px); margin-right: clamp(6px, 1vw, 14px); }
+main > .sheet .sec-head { border-bottom-color: rgba(255, 255, 255, .1); }
+#experience.sheet { border: 0; }
