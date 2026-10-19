@@ -361,8 +361,34 @@
 
     @media (max-width: 1000px) {
       .stacks-grid { grid-template-columns: 1fr; }
-      .stack-stage { order: -1; position: relative; top: auto; height: clamp(320px, 72vw, 520px); }
+      .stack-stage { display: none; }
+      /* the card: icon and title on one line, the microstacks under them from the card's left edge, then its drawing */
+      .stack-card { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 16px; }
+      .stack-text { display: contents; }
+      .stack-text h3 { grid-column: 2; }
+      .stack-tags { grid-column: 1 / -1; }
+      .stack-mini { grid-column: 1 / -1; order: -1; position: relative; aspect-ratio: 1 / 1.04; max-height: 520px; border-radius: 20px; overflow: hidden; background: #000; }
+      .stack-mini canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 1; }
+      /* one discipline at a time: tabs above, a horizontal pager of cards below */
+      #stacks .stack-list {
+        display: flex; gap: 10px; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+        scrollbar-width: none; margin: 0 calc(-1 * var(--edge)); padding: 0 var(--edge) 4px; scroll-padding: 0 var(--edge);
+      }
+      #stacks .stack-list::-webkit-scrollbar { display: none; }
+      #stacks .stack-list > .stack-card { flex: 0 0 92%; scroll-snap-align: start; scroll-snap-stop: always; align-content: start; padding: 10px 10px 20px; gap: 14px 14px; }
+      #stacks .stack-list > .stack-card > .stack-icon { margin-left: 8px; }
+      #stacks .stack-list > .stack-card .stack-tags { padding: 0 8px; }
+      .stack-tabs { display: flex; gap: 6px; margin: 0 calc(-1 * var(--edge)) 14px; padding: 0 var(--edge); overflow-x: auto; scrollbar-width: none; }
+      .stack-tabs::-webkit-scrollbar { display: none; }
+      .stack-tab {
+        flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 12px; border-radius: 20px; cursor: pointer;
+        border: 1px solid var(--md-outline-variant); background: transparent; color: var(--md-on-surface-variant); font: 500 14px/20px Inter, system-ui, sans-serif; letter-spacing: .1px;
+        transition: background-color .25s var(--md-ease), color .25s var(--md-ease), border-color .25s var(--md-ease), border-radius .45s var(--spring);
+      }
+      .stack-tab i { width: 8px; height: 8px; border-radius: 50%; background: var(--card); }
+      .stack-tab[aria-selected="true"] { background: color-mix(in srgb, var(--card) 20%, #1e1f25); border-color: transparent; color: var(--md-on-surface); border-radius: 12px; }
     }
+    @media (min-width: 1001px) { .stack-tabs { display: none; } }
     @media (max-width: 640px) {
       .stack-card { align-items: start; }
       .stack-icon { width: 52px; height: 52px; }
@@ -523,8 +549,18 @@
     .wk-nav button:active { border-radius: 10px; }
     .wk-nav button:disabled { opacity: .38; cursor: default; background: var(--lt-sec-c); color: var(--lt-on-sec-c); border-radius: 50%; }
     .wk-nav svg { width: 22px; height: 22px; }
+    /* phones: a native scroll-snap strip; every item shows its title */
+    .wk-car.is-native {
+      display: flex; gap: 8px; height: auto; overflow-x: auto; overflow-y: hidden; border-radius: 0; cursor: auto; touch-action: auto;
+      scroll-snap-type: x mandatory; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 calc(-1 * var(--edge)); padding: 0 var(--edge); scroll-padding: 0 var(--edge);
+    }
+    .wk-car.is-native::-webkit-scrollbar { display: none; }
+    .wk-car.is-native .wk-item { position: relative; flex: 0 0 84%; height: min(118vw, 470px); scroll-snap-align: start; --o: 1; will-change: auto; }
+    .wk-car.is-native .wk-item[hidden] { display: none; }
+    .wk-car.is-native .wk-info { padding: 18px; }
+    .wk-car.is-native .wk-info .wk-kick { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(10, 12, 30, .45); }
+    .wk-car.is-native .wk-info h3 { font-size: 24px; }
     @media (max-width: 640px) {
-      .wk-car { height: 440px; }
       .wk-open { display: none; }
       .wk-ctrl { gap: 12px; }
     }
@@ -1375,11 +1411,34 @@
         car.appendChild(a); return a;
       });
       let list = items.slice(), p = 0, target = 0, vel = 0, raf = 0, last = 0, W = 0;
+      // on phones the carousel is a native scroll-snap strip: the browser scrolls it (smooth,
+      // with momentum) and the script only keeps the count and the progress in step
+      const PHONE = window.matchMedia('(max-width: 760px)');
+      let native = false, nIdx = 0, sraf = 0;
+      const step = () => { const a = list[0], b = list[1]; return a && b ? b.offsetLeft - a.offsetLeft : (a ? a.offsetWidth : 1); };
+      function readout(i, n, q) {
+        count.innerHTML = `<b>${String(i + 1).padStart(2, '0')}</b> / ${String(n).padStart(2, '0')}`;
+        pa.style.width = `calc(${(q * 100).toFixed(2)}% - 3px)`; pb.style.left = `calc(${(q * 100).toFixed(2)}% + 3px)`; pb.style.display = q > .99 ? 'none' : '';
+      }
+      function nativeRead() {
+        sraf = 0; const n = list.length, max = Math.max(1, car.scrollWidth - car.clientWidth);
+        nIdx = Math.max(0, Math.min(n - 1, Math.round(car.scrollLeft / step())));
+        if (car.scrollLeft >= max - 4) nIdx = n - 1;
+        readout(nIdx, n, n > 1 ? car.scrollLeft / max : 1);
+        prev.disabled = car.scrollLeft <= 4; next.disabled = car.scrollLeft >= max - 4;
+      }
+      function setNative(on) {
+        native = on; car.classList.toggle('is-native', on);
+        items.forEach(el => { el.style.width = ''; el.style.transform = ''; el.style.visibility = ''; el.style.removeProperty('--o'); el.tabIndex = 0; el.hidden = on && !list.includes(el); });
+        if (on) { car.scrollLeft = 0; nativeRead(); } else { p = target = Math.min(nIdx, list.length - 1); vel = 0; SZ = sizes(); layout(); }
+      }
+      car.addEventListener('scroll', () => { if (native && !sraf) sraf = requestAnimationFrame(nativeRead); }, { passive: true });
       const G = 8;
       const sizes = () => { W = car.clientWidth; const S = W < 640 ? 40 : 64, L = Math.round(W * (W < 640 ? .74 : .58)); return { L, M: W - L - S - 2 * G, S }; };
       let SZ = sizes();
       const widthAt = d => { const { L, M, S } = SZ; if (d <= -1 || d >= 2) return S; if (d < 0) return L + (S - L) * -d; if (d < 1) return L + (M - L) * d; return M + (S - M) * (d - 1); };
       function layout() {
+        if (native) return nativeRead();
         const k = Math.floor(p), f = p - k;
         list.forEach((el, i) => {
           const d = i - p, w = widthAt(d);
@@ -1404,17 +1463,20 @@
         if (Math.abs(target - p) < .0005 && Math.abs(vel) < .001) { p = target; vel = 0; layout(); last = 0; return; }
         layout(); raf = requestAnimationFrame(tick);
       }
-      const go = t => { target = Math.max(0, Math.min(list.length - 1, t)); if (!raf) { last = 0; raf = requestAnimationFrame(tick); } };
-      prev.addEventListener('click', () => go(Math.round(target) - 1));
-      next.addEventListener('click', () => go(Math.round(target) + 1));
-      car.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); go(Math.round(target) + 1); list[Math.round(target)].focus({ preventScroll: true }); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(Math.round(target) - 1); list[Math.round(target)].focus({ preventScroll: true }); } });
-      car.addEventListener('focusin', e => { const i = list.indexOf(e.target.closest('.wk-item')); if (i >= 0 && i !== Math.round(target)) go(i); });
+      const go = t => {
+        if (native) { const i = Math.max(0, Math.min(list.length - 1, t)); car.scrollTo({ left: list[i].offsetLeft - list[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth' }); return; }
+        target = Math.max(0, Math.min(list.length - 1, t)); if (!raf) { last = 0; raf = requestAnimationFrame(tick); }
+      };
+      prev.addEventListener('click', () => go((native ? nIdx : Math.round(target)) - 1));
+      next.addEventListener('click', () => go((native ? nIdx : Math.round(target)) + 1));
+      car.addEventListener('keydown', e => { if (native) return; if (e.key === 'ArrowRight') { e.preventDefault(); go(Math.round(target) + 1); list[Math.round(target)].focus({ preventScroll: true }); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(Math.round(target) - 1); list[Math.round(target)].focus({ preventScroll: true }); } });
+      car.addEventListener('focusin', e => { if (native) return; const i = list.indexOf(e.target.closest('.wk-item')); if (i >= 0 && i !== Math.round(target)) go(i); });
       // a horizontal wheel or trackpad swipe moves one project per gesture
       let wheelLock = 0;
-      car.addEventListener('wheel', e => { const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0); if (!dx) return; e.preventDefault(); if (performance.now() < wheelLock || Math.abs(dx) < 4) return; wheelLock = performance.now() + 380; go(Math.round(target) + Math.sign(dx)); }, { passive: false });
+      car.addEventListener('wheel', e => { if (native) return; const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0); if (!dx) return; e.preventDefault(); if (performance.now() < wheelLock || Math.abs(dx) < 4) return; wheelLock = performance.now() + 380; go(Math.round(target) + Math.sign(dx)); }, { passive: false });
       // dragging: the large item follows the pointer; a flick or half a width moves on
       let drag = null, moved = false;
-      car.addEventListener('pointerdown', e => { if (e.button !== 0) return; drag = { x: e.clientX, p: p, t: performance.now(), lx: e.clientX, lt: performance.now(), v: 0 }; moved = false; });
+      car.addEventListener('pointerdown', e => { if (native || e.button !== 0) return; drag = { x: e.clientX, p: p, t: performance.now(), lx: e.clientX, lt: performance.now(), v: 0 }; moved = false; });
       window.addEventListener('pointermove', e => {
         if (!drag) return; const dx = e.clientX - drag.x;
         if (!moved && Math.abs(dx) < 6) return;
@@ -1424,9 +1486,9 @@
       });
       window.addEventListener('pointerup', () => { if (!drag) return; car.classList.remove('is-drag'); if (moved) go(Math.round(p - drag.v * 0.35)); drag = null; });
       // a click on a project that is not the large one brings it forward instead of opening it
-      car.addEventListener('click', e => { const el = e.target.closest('.wk-item'); if (!el) return; if (moved) { e.preventDefault(); moved = false; return; } const i = list.indexOf(el); if (i !== Math.round(target)) { e.preventDefault(); go(i); } }, true);
-      new ResizeObserver(() => { SZ = sizes(); layout(); }).observe(car);
-      layout();
+      car.addEventListener('click', e => { if (native) return; const el = e.target.closest('.wk-item'); if (!el) return; if (moved) { e.preventDefault(); moved = false; return; } const i = list.indexOf(el); if (i !== Math.round(target)) { e.preventDefault(); go(i); } }, true);
+      new ResizeObserver(() => { if (PHONE.matches !== native) setNative(PHONE.matches); else { SZ = sizes(); layout(); } }).observe(car);
+      if (PHONE.matches) setNative(true); else layout();
 
       // filter chips: All and the three kinds of work, each with its count
       const bar = document.getElementById('wk-filters'); if (!bar) return;
@@ -1438,6 +1500,7 @@
         bar.querySelectorAll('.wk-chip').forEach(c => c.setAttribute('aria-pressed', c === b));
         const g = b.dataset.g;
         list = items.filter(el => g === 'All' || el.dataset.group === g);
+        if (native) { items.forEach(el => { el.hidden = !list.includes(el); }); car.scrollLeft = 0; nativeRead(); return; }
         items.forEach(el => { if (!list.includes(el)) { el.style.visibility = 'hidden'; el.tabIndex = -1; } });
         // the new set slides in from the right, then settles on its first project
         p = reduce ? 0 : -.8; target = 0; vel = 0; layout(); go(0);
@@ -1660,7 +1723,7 @@
       // the Expressive shape library: a round body with k lobes of depth d
       const LIB = { circle: [0, 0], cookie: [9, .07], clover: [4, .17], sunny: [8, .1], flower: [6, .13], gem: [5, .09], burst: [12, .06], puff: [3, .12], soft: [4, .08] };
       const rr = (ctx, x, y, w, h, r) => { r = Math.max(0, Math.min(r, w / 2, h / 2)); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); };
-      const band = (W, H) => ({ top: H < 440 ? 52 : 70, bot: H < 440 ? 84 : 112, side: Math.max(20, W * .06) });
+      const band = (W, H) => ({ top: H < 440 ? 52 : 70, bot: W < 420 ? 96 : H < 440 ? 84 : 112, side: Math.max(W < 420 ? 12 : 20, W * .05) });
 
       // ── the drawing kit: artboard units, 400 x 260, centred on 0, 0 ──
       function kit(ctx, S, C) {
@@ -1773,7 +1836,7 @@
           // the step's name and its line
           const k = (reduce ? 1 : E.out(lin(.15, .65, t))) * (1 - (reduce ? 0 : E.in(lin(STEP - .45, STEP - .05, t)))), lift = 6 * (1 - E.out(lin(.15, .8, t)));
           if (k > .01) {
-            const fs = small ? 14 : 16, y = H - (small ? 42 : 50) + lift;
+            const fs = W < 420 ? 13 : small ? 14 : 16, y = H - (W < 420 ? 30 : small ? 42 : 50) + lift;
             ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.font = '500 ' + fs + 'px ' + FONT; try { ctx.letterSpacing = '.15px'; } catch (e) { }
             const lines = wrap(ctx, step.cap, W - 48), top = y - (lines.length - 1) * (fs + 6);
@@ -2014,30 +2077,78 @@
       // each drawing on its own canvas, running only while active and on screen
       const PERIODS = {}; Object.keys(SCENES).forEach(k => { PERIODS[k] = SCENES[k].period; });   // five steps of six seconds
       let visible = true;
+      // phones and tablets: no shared stage; each drawing moves into its own card and runs while that card is on screen
+      const COMPACT = window.matchMedia('(max-width: 1000px)');
+      const shown = {};
       window.STACKS = window.STACKS || {};
       Object.keys(DRAW).forEach(kind => {
         const cv = stage.querySelector('canvas[data-kind="' + kind + '"]'); if (!cv) return;
         const ctx = cv.getContext('2d');
         let W = 0, H = 0, dpr = 1, raf = 0, active = false, born = performance.now();
-        const size = () => { const r = stage.getBoundingClientRect(); W = Math.round(r.width); H = Math.round(r.height); dpr = Math.min(window.devicePixelRatio || 1, 2); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); };
+        const size = () => { const r = (cv.parentElement || stage).getBoundingClientRect(); W = Math.round(r.width); H = Math.round(r.height); dpr = Math.min(window.devicePixelRatio || 1, COMPACT.matches ? 1.75 : 2); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); };
         const paint = t => { ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); DRAW[kind](ctx, W, H, t); };
         // the loop stays alive while the scene is active; it only skips painting while off screen,
         // so it picks up again by itself when the stage comes back into view
-        const tick = now => { raf = 0; if (!active) return; if (visible && !document.hidden) paint((now - born) / 1000); raf = requestAnimationFrame(tick); };
+        const tick = now => { raf = 0; if (!active) return; if ((COMPACT.matches ? shown[kind] : visible) && !document.hidden) paint((now - born) / 1000); raf = requestAnimationFrame(tick); };
         const start = () => { if (!raf && active) raf = requestAnimationFrame(tick); };
         window.STACKS[kind] = {
           period: PERIODS[kind],
           on(v) { active = v; if (v) { born = performance.now(); size(); paint(reduce ? PERIODS[kind] * .9 : 0); if (!reduce) start(); } },
           resize() { size(); if (reduce || !active) paint(PERIODS[kind] * .9); },
           wake: start,
-          debug: t => { size(); paint(t); }
+          debug: t => { size(); paint(t); },
+          isOn: () => active
         };
       });
+      // moving the drawings between the stage and the cards as the layout changes
+      const cards = [...document.querySelectorAll('.stack-card[data-kind]')], minis = {};
+      const mio = new IntersectionObserver(es => es.forEach(e => {
+        const kind = e.target.dataset.kind, S = window.STACKS[kind]; if (!S) return;
+        shown[kind] = e.isIntersecting;
+        if (COMPACT.matches) { if (e.isIntersecting && !S.isOn()) S.on(true); else if (!e.isIntersecting && S.isOn()) S.on(false); }
+      }), { rootMargin: '80px 0px' });
+      function place() {
+        const compact = COMPACT.matches;
+        cards.forEach(card => {
+          const kind = card.dataset.kind, cv = stage.querySelector(`canvas[data-kind="${kind}"]`) || (minis[kind] && minis[kind].querySelector('canvas'));
+          if (!cv) return;
+          if (compact) {
+            if (!minis[kind]) { minis[kind] = document.createElement('div'); minis[kind].className = 'stack-mini'; minis[kind].dataset.kind = kind; minis[kind].setAttribute('aria-hidden', 'true'); card.appendChild(minis[kind]); mio.observe(minis[kind]); }
+            if (cv.parentElement !== minis[kind]) minis[kind].appendChild(cv);
+            cv.classList.add('is-on');
+          } else if (cv.parentElement !== stage) {
+            stage.insertBefore(cv, stage.querySelector('.stage-progress')); cv.classList.remove('is-on'); window.STACKS[kind].on(false);
+          }
+        });
+        document.documentElement.classList.toggle('stacks-compact', compact);
+        if (compact) tabs();
+        window.dispatchEvent(new CustomEvent('stackmode', { detail: compact ? 'compact' : 'stage' }));
+      }
+      // the tabs over the pager: tapping one scrolls to its card; scrolling marks the card in view
+      let tabBar = null;
+      function tabs() {
+        const listEl = document.querySelector('#stacks .stack-list'); if (!listEl || tabBar) return;
+        tabBar = document.createElement('div'); tabBar.className = 'stack-tabs'; tabBar.setAttribute('role', 'tablist'); tabBar.setAttribute('aria-label', 'Disciplines');
+        tabBar.innerHTML = cards.map((c, i) => `<button type="button" class="stack-tab" role="tab" aria-selected="${i === 0}" style="--card:${getComputedStyle(c).getPropertyValue('--card').trim()}"><i></i>${c.querySelector('h3').textContent.replace(' Design', '')}</button>`).join('');
+        listEl.parentNode.insertBefore(tabBar, listEl);
+        const btns = [...tabBar.children];
+        btns.forEach((b, i) => b.addEventListener('click', () => listEl.scrollTo({ left: cards[i].offsetLeft - cards[0].offsetLeft, behavior: reduceMotion ? 'auto' : 'smooth' })));
+        let sr = 0;
+        listEl.addEventListener('scroll', () => { if (sr) return; sr = requestAnimationFrame(() => {
+          sr = 0; const step = cards[1].offsetLeft - cards[0].offsetLeft, i = Math.max(0, Math.min(cards.length - 1, Math.round(listEl.scrollLeft / step)));
+          btns.forEach((b, k) => b.setAttribute('aria-selected', k === i));
+          tabBar.scrollTo({ left: Math.max(0, btns[i].offsetLeft - btns[0].offsetLeft - 24), behavior: 'smooth' });
+        }); }, { passive: true });
+      }
+      const reduceMotion = reduce;
+      place();
+      COMPACT.addEventListener('change', place);
       new IntersectionObserver(([e]) => { visible = e.isIntersecting; Object.values(window.STACKS).forEach(s => s.wake && s.wake()); }, { threshold: 0 }).observe(stage);
       window.addEventListener('scroll', () => { const r = stage.getBoundingClientRect(); visible = r.bottom > 0 && r.top < innerHeight; }, { passive: true });
       document.addEventListener('visibilitychange', () => Object.values(window.STACKS).forEach(s => s.wake && s.wake()));
       let tm = 0;
-      new ResizeObserver(() => { clearTimeout(tm); tm = setTimeout(() => Object.values(window.STACKS).forEach(s => s.resize && s.resize()), 120); }).observe(stage);
+      const rs = new ResizeObserver(() => { clearTimeout(tm); tm = setTimeout(() => Object.values(window.STACKS).forEach(s => s.resize && s.resize()), 120); });
+      rs.observe(stage); Object.values(minis).forEach(m => rs.observe(m));
     })();
 
     // ── WHAT I DO: the list drives the stage ──
@@ -2051,7 +2162,9 @@
       const bar = document.getElementById('stageBar'), idx = document.getElementById('stageIdx'), name = document.getElementById('stageName');
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let cur = -1, timer = 0, began = 0, paused = false, raf = 0;
+      const compact = () => document.documentElement.classList.contains('stacks-compact');
       function select(i, auto) {
+        if (compact()) return;
         if (i === cur && !auto) return;
         cur = i;
         const row = rows[i], kind = row.dataset.kind, S = window.STACKS || {};
@@ -2079,7 +2192,11 @@
         r.addEventListener('click', () => select(i));
         r.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); rows[(i + 1) % rows.length].focus(); } if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); rows[(i + rows.length - 1) % rows.length].focus(); } });
       });
-      // start once the drawings are registered
+      // start once the drawings are registered; switching layouts hands the drawings over
+      window.addEventListener('stackmode', e => {
+        if (e.detail === 'compact') { clearTimeout(timer); rows.forEach(r => r.classList.remove('is-active')); list.classList.remove('has-active'); cur = -1; }
+        else select(Math.max(0, cur), true);
+      });
       requestAnimationFrame(() => select(0, true));
     })();
 
