@@ -105,3 +105,9 @@ main > #work.sheet, main > #experience.sheet { --sheet: #121318; }   /* surface 
 main > .sheet.wrap { margin-left: clamp(6px, 1vw, 14px); margin-right: clamp(6px, 1vw, 14px); }
 main > .sheet .sec-head { border-bottom-color: rgba(255, 255, 255, .1); }
 #experience.sheet { border: 0; }
+
+/* ── steady scrolling on phones: the page never pans sideways (clip, unlike hidden, keeps
+   sticky elements working), and horizontal swipes inside carousels never spill onto the page ── */
+html, body { overflow-x: clip; overscroll-behavior-x: none; }
+@supports not (overflow: clip) { html, body { overflow-x: hidden; } }
+.wk-car.is-native, #stacks .stack-list, .stack-tabs { overscroll-behavior-x: contain; touch-action: pan-x pan-y; }
