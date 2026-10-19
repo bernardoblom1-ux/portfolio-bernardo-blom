@@ -96,7 +96,7 @@
    alternating between two surface tones, with a strip of the black page between them ── */
 main > .sheet {
   --sheet: #0d0e12;                       /* surface container lowest */
-  margin: 0 clamp(6px, 1vw, 14px) clamp(8px, 1vw, 14px);
+  margin: 0 clamp(6px, 1vw, 14px) clamp(10px, 1.4vw, 20px);
   border-radius: var(--md-shape-xl);
   background: var(--sheet);
   overflow: clip;                          /* clips the corners without breaking the sticky stage */
